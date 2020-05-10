@@ -5,7 +5,7 @@ class RequestHandlerFactory
 {
 public:
 
-	LoginRequestHandler* createLoginRequestHandler() { return nullptr; }
+	LoginRequestHandler* createLoginRequestHandler() { return new LoginRequestHandler; }
 	//LoginManager& getLoginManager();
 
 
