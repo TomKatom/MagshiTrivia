@@ -155,6 +155,7 @@
     <ClInclude Include="JsonResponsePacketSerializer.hpp" />
     <ClInclude Include="LoginManager.hpp" />
     <ClInclude Include="LoginRequestHandler.hpp" />
+    <ClInclude Include="ProtocolStructs.hpp" />
     <ClInclude Include="RequestHandlerFactory.hpp" />
     <ClInclude Include="Server.hpp" />
   </ItemGroup>
