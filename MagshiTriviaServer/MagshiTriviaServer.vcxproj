@@ -93,6 +93,8 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>../boost/boost_1_73_0</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <DisableSpecificWarnings>%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,16 +147,19 @@
     <ClCompile Include="LoginManager.cpp" />
     <ClCompile Include="LoginRequestHandler.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MongoDatabase.cpp" />
     <ClCompile Include="RequestHandlerFactory.cpp" />
     <ClCompile Include="Server.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Communicator.hpp" />
+    <ClInclude Include="IDatabase.hpp" />
     <ClInclude Include="IRequestHandler.hpp" />
     <ClInclude Include="JsonRequestPacketDeserializer.hpp" />
     <ClInclude Include="JsonResponsePacketSerializer.hpp" />
     <ClInclude Include="LoginManager.hpp" />
     <ClInclude Include="LoginRequestHandler.hpp" />
+    <ClInclude Include="MongoDatabase.hpp" />
     <ClInclude Include="RequestHandlerFactory.hpp" />
     <ClInclude Include="Server.hpp" />
   </ItemGroup>
