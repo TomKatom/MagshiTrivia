@@ -81,6 +81,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LoggedUser.hpp">
+        <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ProtocolStructs.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

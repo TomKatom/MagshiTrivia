@@ -4,7 +4,8 @@
 #include <SFML/Network.hpp>
 #include "IRequestHandler.hpp"
 #include "RequestHandlerFactory.hpp"
-#include "LoginRequestHandler.hpp"
+#include "JsonRequestPacketDeserializer.hpp"
+#include "JsonResponsePacketSerializer.hpp"
 
 class Communicator
 {
@@ -13,7 +14,7 @@ public:
 
 
 private:
-	void bindAndListen();
+	//void bindAndListen();
 	void handleNewClient(sf::TcpSocket* client);
 
 	std::mutex _clientLock;

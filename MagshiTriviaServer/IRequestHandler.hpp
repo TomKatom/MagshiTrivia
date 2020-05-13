@@ -1,12 +1,5 @@
 #pragma once
-
-struct RequestInfo {
-
-};
-
-struct RequestResult {
-
-};
+#include "ProtocolStructs.hpp"
 
 class IRequestHandler
 {
