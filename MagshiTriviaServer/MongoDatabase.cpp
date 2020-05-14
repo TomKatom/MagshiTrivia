@@ -37,9 +37,9 @@ void MongoDatabase::addNewUser(string name, string password, string email) {
 		<< bsoncxx::builder::stream::finalize;
 	auto result = users.insert_one(doc_value.view());
 }
-bool MongoDatabase::doesPasswordMatch(string password) {
+bool MongoDatabase::doesPasswordMatch(string username, string password) {
 	mongocxx::collection users = this->_db["users"];
-	auto result = users.find_one(document{} << "password" << password << finalize);
+	auto result = users.find_one(document{} << "username" << username << "password" << password << finalize);
 	return result ? true : false;
 }
 bool MongoDatabase::doesUserExist(string username) {

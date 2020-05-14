@@ -10,7 +10,7 @@ class MongoDatabase : public IDatabase {
 public:
 	MongoDatabase();
 	bool doesUserExist(std::string username);
-	bool doesPasswordMatch(std::string password);
+	bool doesPasswordMatch(std::string username, std::string password);
 	void addNewUser(std::string username, std::string password, std::string email);
 private:
 	mongocxx::database _db;
