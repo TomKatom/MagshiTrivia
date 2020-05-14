@@ -13,7 +13,8 @@ typedef struct RequestInfo {
 } RequestInfo;
 
 typedef struct RequestResult {
-
+	std::vector<unsigned char> buffer;
+	IRequestHandler* irequestHandler;
 }RequestResult;
 
 typedef struct ErrorResponse {

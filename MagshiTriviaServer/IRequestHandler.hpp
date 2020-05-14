@@ -1,5 +1,6 @@
 #pragma once
 #include "ProtocolStructs.hpp"
+#include "JsonResponsePacketSerializer.hpp"
 
 class IRequestHandler
 {

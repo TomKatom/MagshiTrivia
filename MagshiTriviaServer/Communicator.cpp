@@ -39,6 +39,7 @@ void Communicator::handleNewClient(sf::TcpSocket* client) {
 
 	char data[MAX_SIZE];
 	std::size_t received;
+	std::vector<unsigned char> buffer;
 
 	while (true) {
 		if (client->receive(data, MAX_SIZE, received) != sf::Socket::Done)	{
@@ -56,15 +57,20 @@ void Communicator::handleNewClient(sf::TcpSocket* client) {
 		RequestInfo requestInfo = JsonRequestPacketDeserializer::getRequestInfo(buffer);
 		if (this->m_clients.find(client)->second->isRequestValid(requestInfo)) {
 			RequestResult requestResult =  this->m_clients.find(client)->second->handleRequest(requestInfo);
+			buffer = requestResult.buffer;
+			for (int i = 0; i < buffer.size(); i++) {
+				data[i] = buffer[i];
+			}
+			client->send(data, buffer.size() ); //Send error msg to client
 		}
 		else {
 			ErrorResponse errorResponse;
 			errorResponse.message = "Error";
-			std::vector<unsigned char> buffer = JsonResponsePacketSerializer::serializeResponse(errorResponse);
+			buffer = JsonResponsePacketSerializer::serializeResponse(errorResponse);
 			for (int i = 0; i < buffer.size(); i++) {
 				data[i] = buffer[i];
 			}
-			client->send(data, strlen(data) + 1); //Send error msg to client
+			client->send(data, buffer.size()); //Send error msg to client
 			break;
 		}	
 	}
