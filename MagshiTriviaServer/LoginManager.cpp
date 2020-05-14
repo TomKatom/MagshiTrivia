@@ -11,8 +11,8 @@ LoginManager::~LoginManager() {
 }
 
 void LoginManager::login(std::string username, std::string password) {
-	if (this->m_database->doesUserExist(username) and this->m_database->doesPasswordMatch(password)) { // this is a very stupid way to validate and terrible design, pretty sure it also doesn't work properly but could be fixed with 2 lines of code.
-		this->m_loggedUsers.push_back(LoggedUser(username)); // basically what it does is check if there is an account with the username and check if there is an account with that password, not if there is an account with both.
+	if (this->m_database->doesPasswordMatch(username, password)) { 
+		this->m_loggedUsers.push_back(LoggedUser(username)); 
 	}
 }
 

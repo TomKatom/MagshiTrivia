@@ -14,7 +14,7 @@ int main()
 	server.run();
 	*/
 	MongoDatabase db;
-	std::cout << db.doesPasswordMatch("1234") << std::endl;
+	std::cout << db.doesPasswordMatch("TomKatom", "1234") << std::endl;
 	return 0;
 }
 
