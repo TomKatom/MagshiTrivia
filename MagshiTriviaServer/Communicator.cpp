@@ -42,18 +42,30 @@ void Communicator::handleNewClient(sf::TcpSocket* client) {
 
 	while (true) {
 		if (client->receive(data, MAX_SIZE, received) != sf::Socket::Done)	{
+			break;
+		}
+		std::vector<unsigned char> buffer;
+		for (int i = 0; i < received; i++) {
+			buffer.push_back(data[i]);
+		}
+		/*if (client->send("Hello client" , 13) != sf::Socket::Done)
+		{
+
+		}*/
+		std::lock_guard<std::mutex> clientLockGuard(this->_clientLock);
+		RequestInfo requestInfo = JsonRequestPacketDeserializer::getRequestInfo(buffer);
+		if (this->m_clients.find(client)->second->isRequestValid(requestInfo)) {
+			RequestResult requestResult =  this->m_clients.find(client)->second->handleRequest(requestInfo);
 		}
 		else {
-
-			if (client->send("Hello client" , 13) != sf::Socket::Done)
-			{
-
+			ErrorResponse errorResponse;
+			errorResponse.message = "Error";
+			std::vector<unsigned char> buffer = JsonResponsePacketSerializer::serializeResponse(errorResponse);
+			for (int i = 0; i < buffer.size(); i++) {
+				data[i] = buffer[i];
 			}
-			/*std::lock_guard<std::mutex> clientLockGuard(this->_clientLock);
-			if (this->m_clients.find(client)->second->isRequestValid()) {
-
-			}*/
-		}
+			client->send(data, strlen(data) + 1); //Send error msg to client
+			break;
+		}	
 	}
-
 }

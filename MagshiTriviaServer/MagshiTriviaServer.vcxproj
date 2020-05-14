@@ -162,6 +162,7 @@
     <ClInclude Include="LoginManager.hpp" />
     <ClInclude Include="LoginRequestHandler.hpp" />
     <ClInclude Include="MongoDatabase.hpp" />
+    <ClInclude Include="ProtocolStructs.hpp" />
     <ClInclude Include="RequestHandlerFactory.hpp" />
     <ClInclude Include="Server.hpp" />
   </ItemGroup>
