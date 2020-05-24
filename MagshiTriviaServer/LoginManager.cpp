@@ -14,6 +14,9 @@ void LoginManager::login(std::string username, std::string password) {
 	if (this->m_database->doesPasswordMatch(username, password)) { 
 		this->m_loggedUsers.push_back(LoggedUser(username)); 
 	}
+	else {
+		throw std::exception("User doesn't exist.");
+	}
 }
 
 void LoginManager::signup(std::string username, std::string password, std::string email) {

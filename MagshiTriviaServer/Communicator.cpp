@@ -4,6 +4,13 @@
 #define MAX_SIZE 1024
 
 void Communicator::startHandleRequests() {
+	std::thread(&Communicator::bindAndListen, this).detach();
+	while (true) {
+		getchar();
+	}
+}
+
+void Communicator::bindAndListen() {
 	sf::TcpListener listener;
 	std::vector<std::thread*> threads;
 	std::thread* match;

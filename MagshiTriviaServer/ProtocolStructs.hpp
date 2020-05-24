@@ -9,7 +9,7 @@ class Communicator;
 typedef struct RequestInfo {
 	unsigned char messageCode;
 	//time
-	std::vector<unsigned char> jsonData;
+	std::vector<unsigned char> buffer;
 } RequestInfo;
 
 typedef struct RequestResult {
@@ -44,6 +44,13 @@ typedef struct LoginRequest {
 enum ResponseCodes { 
 	loginResponseCode =0, 
 	signupResponseCode
+};
+
+enum ResponseStatus {
+	loginSuccess = 0,
+	loginError,
+	SignUpSuccess,
+	SignUpError
 };
 	//Login and Signup
 	//unsigned char loginResponseCode = 0;

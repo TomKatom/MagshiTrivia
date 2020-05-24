@@ -8,12 +8,8 @@
 
 int main()
 {
-	/*
 	Server server;
 	server.run();
-	*/
-	MongoDatabase db;
-	std::cout << db.doesPasswordMatch("TomKatom", "1234") << std::endl;
 	return 0;
 }
 

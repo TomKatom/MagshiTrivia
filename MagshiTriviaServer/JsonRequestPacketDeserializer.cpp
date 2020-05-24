@@ -32,12 +32,9 @@ SignupRequest JsonRequestPacketDeserializer::deserializeSignUpRequest(std::vecto
 }
 
 RequestInfo JsonRequestPacketDeserializer::getRequestInfo(std::vector< unsigned char > buffer) {
-	int jsonDataLength = ((buffer[1] << 8 | buffer[2]) << 8 | buffer[3]) << 8 | buffer[4]; //convert 4 bytes that represtns the length from buffer to integer
-
-	std::vector<unsigned char> jsonData(buffer.begin() + 5, buffer.begin() + 5 + jsonDataLength);
 
 	RequestInfo requestInfo;
 	requestInfo.messageCode = buffer[0];
-	requestInfo.jsonData = jsonData;
+	requestInfo.buffer = buffer;
 	return requestInfo;
 }

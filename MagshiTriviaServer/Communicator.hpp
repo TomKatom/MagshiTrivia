@@ -14,7 +14,7 @@ public:
 
 
 private:
-	//void bindAndListen();
+	void bindAndListen();
 	void handleNewClient(sf::TcpSocket* client);
 
 	std::mutex _clientLock;
