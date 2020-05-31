@@ -3,11 +3,15 @@
 #include <thread>
 #include <vector>
 #include "Server.hpp"
-#include "MongoDatabase.hpp"
+#include <mongocxx/client.hpp>
+#include <mongocxx/stdx.hpp>
+#include <mongocxx/uri.hpp>
+#include <mongocxx/instance.hpp>
 #include <iostream>
 
 int main()
 {
+	mongocxx::instance instance{}; 
 	Server server;
 	server.run();
 	return 0;
