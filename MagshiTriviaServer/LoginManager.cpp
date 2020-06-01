@@ -4,7 +4,7 @@
 #include <algorithm>
 
 LoginManager::LoginManager() {
-	this->m_database = new MongoDatabase();
+	//this->m_database = new MongoDatabase();
 }
 LoginManager::~LoginManager() {
 	delete this->m_database;

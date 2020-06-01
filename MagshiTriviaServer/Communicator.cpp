@@ -34,6 +34,9 @@ void Communicator::bindAndListen() {
 		match = new std::thread(&Communicator::handleNewClient,this, client);
 		match->detach();
 		threads.push_back(match);
+
+
+
 	}
 
 	for (auto thread : threads)
@@ -56,10 +59,7 @@ void Communicator::handleNewClient(sf::TcpSocket* client) {
 		for (int i = 0; i < received; i++) {
 			buffer.push_back(data[i]);
 		}
-		/*if (client->send("Hello client" , 13) != sf::Socket::Done)
-		{
 
-		}*/
 		std::lock_guard<std::mutex> clientLockGuard(this->_clientLock);
 		RequestInfo requestInfo = JsonRequestPacketDeserializer::getRequestInfo(buffer);
 		if (this->m_clients.find(client)->second->isRequestValid(requestInfo)) {
