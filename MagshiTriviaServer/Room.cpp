@@ -1,6 +1,14 @@
 #include "Room.hpp"
 #include <algorithm>
 
+Room::Room(int id, std::string name, int maxPlayers, unsigned int timePerQuestion) {
+	this->_id = id;
+	this->_name = name;
+	this->_maxPlayers = maxPlayers;
+	this->_timePerQuestion = timePerQuestion;
+	this->_isActive = false;
+}
+
 void Room::addUser(LoggedUser user) {
 	if (std::find_if(this->m_users.begin(), this->m_users.end(), [&](auto user) {return user.getUsername() == username; }) == this->m_users.end()) {
 		this->m_users.push_back(user);
@@ -20,4 +28,16 @@ std::list<LoggedUser> Room::getAllUsers() const {
 		users.push_back(user);
 	}
 	return users;
+}
+
+void Room::setActive(bool active) {
+	this->_isActive = active;
+}
+
+std::string Room::getName() {
+	return this->_name;
+}
+
+bool Room::getState() {
+	return this->_isActive;
 }
