@@ -152,6 +152,7 @@
     <ClCompile Include="MongoDatabase.cpp" />
     <ClCompile Include="RequestHandlerFactory.cpp" />
     <ClCompile Include="Room.cpp" />
+    <ClCompile Include="RoomManager.cpp" />
     <ClCompile Include="Server.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -167,6 +168,8 @@
     <ClInclude Include="MongoDatabase.hpp" />
     <ClInclude Include="RequestHandlerFactory.hpp" />
     <ClInclude Include="Room.hpp" />
+    <ClInclude Include="RoomData.hpp" />
+    <ClInclude Include="RoomManager.hpp" />
     <ClInclude Include="Server.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
