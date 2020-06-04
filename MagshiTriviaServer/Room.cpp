@@ -10,7 +10,7 @@ Room::Room(int id, std::string name, int maxPlayers, unsigned int timePerQuestio
 }
 
 void Room::addUser(LoggedUser user) {
-	if (std::find_if(this->m_users.begin(), this->m_users.end(), [&](auto user) {return user.getUsername() == username; }) == this->m_users.end()) {
+	if (std::find_if(this->m_users.begin(), this->m_users.end(), [&](auto username) {return user.getUsername() == username.getUsername(); }) == this->m_users.end()) {
 		this->m_users.push_back(user);
 	}
 	else {
@@ -18,8 +18,8 @@ void Room::addUser(LoggedUser user) {
 	}
 }
 
-void Room::removeUser(LoggedUser) {
-	this->m_users.erase(std::remove_if(this->m_users.begin(), this->m_users.end(), [&](auto user) {return user.getUsername() == username; }));
+void Room::removeUser(LoggedUser user) {
+	this->m_users.erase(std::remove_if(this->m_users.begin(), this->m_users.end(), [&](auto username) {return user.getUsername() == username.getUsername(); }));
 }
 
 std::list<LoggedUser> Room::getAllUsers() const {
