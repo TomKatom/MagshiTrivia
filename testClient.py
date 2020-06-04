@@ -26,9 +26,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     time.sleep(2)
     print("* Connection succeeded \n")
 
-    print("* sign up: (username: \"user1\",password: \"1234\", email:user1@gmail.com )")
+    print("* sign up: (username: \"user1\",password: \"1234\", \"email:user1@gmail.com\" )")
     time.sleep(2)
-    x =  '''{"username" : "user1", "password" : "1234", "email" : "user1@gmail.com"}'''
+    x =  '''{"username" : "user2", "password" : "123456", "email" : "user1@gmail.com"}'''
     data = b = bytes([21,0x0,0x0,0x0,len(x)]) + x.encode()
     s.sendall(data)
     data = s.recv(1024)
