@@ -22,7 +22,6 @@ using bsoncxx::builder::stream::open_document;
 using std::string;
 
 MongoDatabase::MongoDatabase() {
-	mongocxx::instance instance{}; 
 	this->_client = new mongocxx::client(mongocxx::uri{});
 	this->_db = (*_client)["Trivia"];
 }

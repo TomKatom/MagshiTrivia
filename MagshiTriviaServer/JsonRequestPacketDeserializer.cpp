@@ -12,7 +12,7 @@ LoginRequest JsonRequestPacketDeserializer::deserializeLoginRequest(std::vector<
 	json j = json::parse(jsonData);
 
 	LoginRequest loginRequest;
-	loginRequest.userName = j["userName"];
+	loginRequest.userName = j["username"];
 	loginRequest.password = j["password"];
 	return loginRequest;
 }
@@ -25,7 +25,7 @@ SignupRequest JsonRequestPacketDeserializer::deserializeSignUpRequest(std::vecto
 	json j = json::parse(jsonData);
 
 	SignupRequest signupRequest;
-	signupRequest.username = j["userName"];
+	signupRequest.username = j["username"];
 	signupRequest.password = j["password"];
 	signupRequest.email = j["email"];
 	return signupRequest;
