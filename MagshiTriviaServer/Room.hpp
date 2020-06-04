@@ -4,6 +4,7 @@
 #include <list>
 class Room {
 public:
+	Room() = default;
 	Room(int id, std::string name, int maxPlayers, unsigned int timePerQuestion);
 	void addUser(LoggedUser user);
 	void removeUser(LoggedUser user);
