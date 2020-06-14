@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
-
+#include "RoomData.hpp"
 
 class IRequestHandler;
 class Communicator;
@@ -40,10 +40,65 @@ typedef struct LoginRequest {
 	std::string password;
 }LoginRequest;
 
+typedef struct LogoutResponse {
+	unsigned int status;
+}LogoutResponse;
+
+typedef struct GetRoomsResponse {
+	unsigned int status;
+	std::vector<RoomData> rooms;
+}GetRoomsResponse;
+
+typedef struct GetPlayersInRoomResponse {
+	std::vector<std::string> players;
+}GetPlayersInRoomResponse;
+
+typedef struct JoinRoomResponse {
+	unsigned int status;
+}JoinRoomResponse;
+
+typedef struct CreateRoomResponse {
+	unsigned int status;
+}CreateRoomResponse;
+
+typedef struct GetStatisticsResponse {
+	unsigned int status;
+	UserStatistics userStatistics;
+	std::vector<HighScore> highScores;
+
+}GetStatisticsResponse;
+
+typedef struct UserStatistics {
+	unsigned long numOfPlayerGames;
+	unsigned long numOfCorrectAnswers;
+	unsigned long numberOfTotalAnswers;
+	double correctAnswersPercentage;
+}UserStatistics;
+
+typedef struct HighScore {
+	std::string playerName;
+	unsigned long long playerScore;
+}GetPlayersInRoomRequest;
+
+typedef struct GetPlayersInRoomRequest {
+	unsigned int roomId;
+}GetPlayersInRoomRequest;
+
+typedef struct JoinRoomRequest {
+	unsigned int roomId;
+}JoinRoomRequest;
+
+typedef struct CreateRoomRequest {
+	std::string roomName;
+	unsigned int maxUsers;
+	unsigned int questionCount;
+	unsigned int answerTimeout;
+}CreateRoomRequest;
 
 enum ResponseCodes { 
 	loginResponseCode =0, 
-	signupResponseCode
+	signupResponseCode,
+	logoutResponseCode
 };
 
 enum ResponseStatus {

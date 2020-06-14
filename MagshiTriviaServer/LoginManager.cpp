@@ -4,7 +4,7 @@
 #include <algorithm>
 
 LoginManager::LoginManager() {
-	//this->m_database = new MongoDatabase();
+	this->m_database = new MongoDatabase();
 }
 LoginManager::~LoginManager() {
 	delete this->m_database;
@@ -18,6 +18,7 @@ void LoginManager::login(std::string username, std::string password) {
 		}
 		else {
 			throw std::exception("User doesn't exist.");
+
 		}
 	}
 	else {
