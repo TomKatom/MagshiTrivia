@@ -40,6 +40,9 @@ typedef struct LoginRequest {
 	std::string password;
 }LoginRequest;
 
+
+
+
 typedef struct LogoutResponse {
 	unsigned int status;
 }LogoutResponse;
@@ -61,24 +64,28 @@ typedef struct CreateRoomResponse {
 	unsigned int status;
 }CreateRoomResponse;
 
-typedef struct GetStatisticsResponse {
-	unsigned int status;
-	UserStatistics userStatistics;
-	std::vector<HighScore> highScores;
-
-}GetStatisticsResponse;
-
 typedef struct UserStatistics {
-	unsigned long numOfPlayerGames;
-	unsigned long numOfCorrectAnswers;
-	unsigned long numberOfTotalAnswers;
+	unsigned int numOfPlayerGames;
+	unsigned int numOfCorrectAnswers;
+	unsigned int numberOfTotalAnswers;
 	double correctAnswersPercentage;
 }UserStatistics;
 
 typedef struct HighScore {
 	std::string playerName;
-	unsigned long long playerScore;
-}GetPlayersInRoomRequest;
+	unsigned int playerScore;
+}HighScore;
+
+typedef struct GetStatisticsResponse {
+	unsigned int status;
+	UserStatistics userStatistics;
+	std::vector<HighScore> highScores;
+}GetStatisticsResponse;
+
+
+typedef struct LogoutRequest {
+	std::string username;
+}LogoutRequest;
 
 typedef struct GetPlayersInRoomRequest {
 	unsigned int roomId;
@@ -104,8 +111,16 @@ enum ResponseCodes {
 enum ResponseStatus {
 	loginSuccess = 0,
 	loginError,
-	SignUpSuccess,
-	SignUpError
+	signUpSuccess,
+	signUpError,
+	logoutSuccess,
+	logoutError,
+	getRoomsSuccess,
+	getRoomsError,
+	joinRoomSuccess,
+	joinRoomError,
+	createRoomSuccess,
+	createRoomError
 };
 	//Login and Signup
 	//unsigned char loginResponseCode = 0;
@@ -117,7 +132,13 @@ enum ResponseStatus {
 
 enum RequestCodes {
 	loginRequestCode = 20, 
-	signupRequestCode
+	signupRequestCode,
+	createRoomRequest,
+	getRoomsRequest,
+	getPlayersInRoomRequest,
+	joinRoomRequest,
+	getStatisticsRequest,
+	logoutRequest
 };
 	//Login and Signup
 	//unsigned char loginRequestCode = 20;

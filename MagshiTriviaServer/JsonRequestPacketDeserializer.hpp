@@ -12,6 +12,7 @@ public:
 	static RequestInfo getRequestInfo(std::vector< unsigned char > buffer);
 
 	//V2
+	static LogoutRequest deserializeLogoutRequest(std::vector<unsigned char> buffer);
 	static GetPlayersInRoomRequest deserializeGetPlayersInRoomRequest(std::vector< unsigned char > buffer);
 	static JoinRoomRequest deserializeJoinRoomRequest(std::vector< unsigned char > buffer);
 	static CreateRoomRequest deserializeCreateRoomRequest(std::vector< unsigned char > buffer);

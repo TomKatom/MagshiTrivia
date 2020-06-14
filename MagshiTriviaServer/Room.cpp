@@ -43,3 +43,15 @@ std::string Room::getName() {
 bool Room::getState() {
 	return this->_isActive;
 }
+
+int Room::getMaxPlayers() const {
+	return this->_maxPlayers;
+}
+
+unsigned int Room::getTimePerQuestion() const {
+	return this->_timePerQuestion;
+}
+
+int Room::getQuestionsCount() const {
+	return this->_questionsCount;
+}

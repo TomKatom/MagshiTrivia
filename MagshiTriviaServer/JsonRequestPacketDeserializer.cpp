@@ -67,3 +67,11 @@ CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoomRequest(st
 	req.answerTimeout = j["answerTimeout"];
 	return req;	
 }
+
+LogoutRequest JsonRequestPacketDeserializer::deserializeLogoutRequest(std::vector<unsigned char> buffer) {
+	json j = JsonRequestPacketDeserializer::getJsonFromBuffer(buffer);
+
+	LogoutRequest logoutRequest;
+	logoutRequest.username = j["name"];
+	return logoutRequest;
+}

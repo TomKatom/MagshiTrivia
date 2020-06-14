@@ -9,38 +9,52 @@ bool LoginRequestHandler::isRequestValid(RequestInfo requestInfo) {
 }
 
 RequestResult LoginRequestHandler::handleRequest(RequestInfo requestInfo) {
-	RequestHandlerFactory handlerFactory;
-	LoginManager loginManager;
-	RequestResult a;
+	RequestResult requestRes;
 	if (requestInfo.messageCode == RequestCodes::loginRequestCode) {
-		LoginResponse response;
-		try {
-			LoginRequest request = JsonRequestPacketDeserializer::deserializeLoginRequest(requestInfo.buffer);
-			loginManager.login(request.userName, request.password);
-			response.status = ResponseStatus::loginSuccess;
-			a.irequestHandler = handlerFactory.createMenuRequestHandler();
-		}
-		catch (std::exception & e) {
-			response.status = ResponseStatus::loginError;
-			a.irequestHandler = handlerFactory.createLoginRequestHandler();
-		}
-		a.buffer = JsonResponsePacketSerializer::serializeResponse(response);
+		requestRes =  login(requestInfo);
 	}
 	else {
-		SignupResponse response;
-		try {
-			SignupRequest request = JsonRequestPacketDeserializer::deserializeSignUpRequest(requestInfo.buffer);
-			loginManager.signup(request.username, request.password, request.email);
-			response.status = ResponseStatus::SignUpSuccess;
-			a.irequestHandler = handlerFactory.createLoginRequestHandler();
-		}
-		catch (std::exception & e) {
-			response.status = ResponseStatus::SignUpError;
-			a.irequestHandler = handlerFactory.createLoginRequestHandler();
-		}
-		a.buffer = JsonResponsePacketSerializer::serializeResponse(response);
+		requestRes = signup(requestInfo);
 	}
 
-	return a;
+	return requestRes;
 
+}
+
+RequestResult LoginRequestHandler::login(RequestInfo requestInfo) {
+	RequestHandlerFactory handlerFactory;
+	LoginManager loginManager;
+	RequestResult requestRes;
+	LoginResponse response;
+	try {
+		LoginRequest request = JsonRequestPacketDeserializer::deserializeLoginRequest(requestInfo.buffer);
+		loginManager.login(request.userName, request.password);
+		response.status = ResponseStatus::loginSuccess;
+		requestRes.irequestHandler = handlerFactory.createMenuRequestHandler();
+	}
+	catch (std::exception & e) {
+		response.status = ResponseStatus::loginError;
+		requestRes.irequestHandler = handlerFactory.createLoginRequestHandler();
+	}
+	requestRes.buffer = JsonResponsePacketSerializer::serializeResponse(response);
+	return requestRes;
+}
+
+RequestResult LoginRequestHandler::signup(RequestInfo requestInfo) {
+	SignupResponse response;
+	RequestHandlerFactory handlerFactory;
+	LoginManager loginManager;
+	RequestResult requestRes;
+	try {
+		SignupRequest request = JsonRequestPacketDeserializer::deserializeSignUpRequest(requestInfo.buffer);
+		loginManager.signup(request.username, request.password, request.email);
+		response.status = ResponseStatus::signUpSuccess;
+		requestRes.irequestHandler = handlerFactory.createLoginRequestHandler();
+	}
+	catch (std::exception & e) {
+		response.status = ResponseStatus::signUpError;
+		requestRes.irequestHandler = handlerFactory.createLoginRequestHandler();
+	}
+	requestRes.buffer = JsonResponsePacketSerializer::serializeResponse(response);
+	return requestRes;
 }

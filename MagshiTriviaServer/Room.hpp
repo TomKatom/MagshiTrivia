@@ -12,11 +12,16 @@ public:
 	std::string getName();
 	bool getState();
 	void setActive(bool active);
+	int getMaxPlayers() const;
+	unsigned int getTimePerQuestion() const;
+	int getQuestionsCount() const;
+
 private:
 	int _id;
 	std::string _name;
 	int _maxPlayers;
 	unsigned int _timePerQuestion;
 	bool _isActive;
+	int _questionsCount;
 	std::vector<LoggedUser> m_users;
 };

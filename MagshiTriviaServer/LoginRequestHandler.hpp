@@ -8,8 +8,8 @@ public:
 	RequestResult handleRequest(RequestInfo requestInfo);
 
 private:
-	/*RequestResult login(RequestInfo requestInfo);
-	RequestResult signup(RequestInfo requestInfo);*/
+	RequestResult login(RequestInfo requestInfo);
+	RequestResult signup(RequestInfo requestInfo);
 
 };
 

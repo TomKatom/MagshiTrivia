@@ -9,12 +9,14 @@ public:
 	LoginRequestHandler* createLoginRequestHandler() { return new LoginRequestHandler; }
 	MenuRequestHandler* createMenuRequestHandler() { return new MenuRequestHandler; }
 
+	//V2
+	
+
 	//LoginManager& getLoginManager();
 
 
 private:
 	LoginManager m_loginManager;
-
 
 };
 
