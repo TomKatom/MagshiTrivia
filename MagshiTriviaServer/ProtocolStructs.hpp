@@ -102,6 +102,27 @@ typedef struct CreateRoomRequest {
 	unsigned int answerTimeout;
 }CreateRoomRequest;
 
+//V3
+typedef struct CloseRoomResponse {
+	unsigned int status;
+}CloseRoomResponse;
+
+typedef struct StartRoomResponse {
+	unsigned int status;
+}StartRoomResponse;
+
+typedef struct GetRoomStateResponse {
+	unsigned int status;
+	bool hasGameBegun;
+	std::vector<std::string> players;
+	unsigned int questionCount;
+	unsigned int answerTimeout;
+}GetRoomStateResponse;
+
+typedef struct LeaveRoomResponse {
+	unsigned int status;
+}LeaveRoomResponse;
+
 enum ResponseCodes { 
 	loginResponseCode =0, 
 	signupResponseCode,

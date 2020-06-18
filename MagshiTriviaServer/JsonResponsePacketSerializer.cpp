@@ -23,51 +23,14 @@ std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(Error
 }
 
 std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(LoginResponse res) {
-	std::vector<unsigned char> buffer;
-	int jsonDataLength = 0;
-	json j;
-	j["status"] = res.status;
-
-	for (auto& c : j.dump()) {
-		buffer.push_back(c);
-	}
-
-	jsonDataLength = buffer.size();
-	buffer.insert(buffer.begin(), jsonDataLength & 0xff);
-	buffer.insert(buffer.begin(), jsonDataLength >> 8 & 0xff);
-	buffer.insert(buffer.begin(), jsonDataLength >> 16 & 0xff);
-	buffer.insert(buffer.begin(), jsonDataLength >> 24 & 0xff);
-	buffer.insert(buffer.begin(), loginResponseCode);
-	return buffer;
+	return serializeStatusResponse(res.status);
 }
 std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(SignupResponse res) {
-	std::vector<unsigned char> buffer;
-	int jsonDataLength = 0;
-	json j;
-	j["status"] = res.status;
-
-	for (auto& c : j.dump()) {
-		buffer.push_back(c);
-	}
-
-	jsonDataLength = buffer.size();
-	JsonResponsePacketSerializer::insertInt2Vector(buffer, buffer.size());
-	buffer.insert(buffer.begin(), loginResponseCode);
-	return buffer;
+	return serializeStatusResponse(res.status);
 }
 
 std::vector<unsigned char>  JsonResponsePacketSerializer::serializeResponse(LogoutResponse res) {
-	std::vector<unsigned char> buffer;
-	json j;
-	j["status"] = res.status;
-
-	for (auto& c : j.dump()) {
-		buffer.push_back(c);
-	}
-
-	JsonResponsePacketSerializer::insertInt2Vector(buffer, buffer.size());
-	buffer.insert(buffer.begin(), logoutResponseCode);
-	return buffer;
+	return serializeStatusResponse(res.status);
 }
 
 std::vector<unsigned char>  JsonResponsePacketSerializer::serializeResponse(GetRoomsResponse res) {
@@ -112,31 +75,11 @@ std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetPl
 }
 
 std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(JoinRoomResponse res) {
-	std::vector<unsigned char> buffer;
-	json j;
-	j["status"] = res.status;
-
-	for (auto& c : j.dump()) {
-		buffer.push_back(c);
-	}
-
-	JsonResponsePacketSerializer::insertInt2Vector(buffer, buffer.size());
-	buffer.insert(buffer.begin(), logoutResponseCode);
-	return buffer;
+	return serializeStatusResponse(res.status);
 }
 
 std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(CreateRoomResponse res) {
-	std::vector<unsigned char> buffer;
-	json j;
-	j["status"] = res.status;
-
-	for (auto& c : j.dump()) {
-		buffer.push_back(c);
-	}
-
-	JsonResponsePacketSerializer::insertInt2Vector(buffer, buffer.size());
-	buffer.insert(buffer.begin(), logoutResponseCode);
-	return buffer;
+	return serializeStatusResponse(res.status);
 }
 
 std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetStatisticsResponse res) {
@@ -164,9 +107,58 @@ std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetSt
 	return j;
 }
 
+std::vector<unsigned char>  JsonResponsePacketSerializer::serializeResponse(CloseRoomResponse res) {
+	return serializeStatusResponse(res.status);
+}
+
+std::vector<unsigned char>  JsonResponsePacketSerializer::serializeResponse(StartRoomResponse res) {
+	return serializeStatusResponse(res.status);
+}
+
+
+std::vector<unsigned char>  JsonResponsePacketSerializer::serializeResponse(GetRoomStateResponse res) {
+	std::vector<unsigned char> buffer;
+	json j, temp;
+	json playersJson = json::array();
+
+	for (int i = 0; i < res.players.size(); i++) {
+		playersJson[i] = res.players[i];
+	}
+
+	j["status"] = res.status;
+	j["hasGameBegun"] = res.hasGameBegun;
+	j["players"] = playersJson;
+	j["questionCount"] = res.questionCount;
+	j["answerTimeout"] = res.answerTimeout;
+
+	return j;
+}
+
+std::vector<unsigned char>  JsonResponsePacketSerializer::serializeResponse(LeaveRoomResponse res) {
+	return serializeStatusResponse(res.status);
+}
+
+
+
+
+//Helper functions
 void JsonResponsePacketSerializer::insertInt2Vector(std::vector<unsigned char>& vector, int val) {
 	vector.insert(vector.begin(), val & 0xff);
 	vector.insert(vector.begin(), val >> 8 & 0xff);
 	vector.insert(vector.begin(), val >> 16 & 0xff);
 	vector.insert(vector.begin(), val >> 24 & 0xff);
 }	
+
+std::vector<unsigned char> JsonResponsePacketSerializer::serializeStatusResponse(unsigned int status) {
+	std::vector<unsigned char> buffer;
+	json j;
+	j["status"] = status;
+
+	for (auto& c : j.dump()) {
+		buffer.push_back(c);
+	}
+
+	JsonResponsePacketSerializer::insertInt2Vector(buffer, buffer.size());
+	buffer.insert(buffer.begin(), logoutResponseCode);
+	return buffer;
+}

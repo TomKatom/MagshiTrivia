@@ -19,8 +19,16 @@ public:
 	static std::vector<unsigned char> serializeResponse(CreateRoomResponse);
 	static std::vector<unsigned char> serializeResponse(GetStatisticsResponse);
 
+	//V3
+	static std::vector<unsigned char>  serializeResponse(CloseRoomResponse);
+	static std::vector<unsigned char>  serializeResponse(StartRoomResponse);
+	static std::vector<unsigned char>  serializeResponse(GetRoomStateResponse);
+	static std::vector<unsigned char>  serializeResponse(LeaveRoomResponse);
+
 
 private:
 	static void insertInt2Vector(std::vector<unsigned char>& vector, int val);
+	static std::vector<unsigned char> serializeStatusResponse(unsigned int status);
+
 };
 
