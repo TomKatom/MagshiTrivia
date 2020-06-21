@@ -123,6 +123,9 @@ typedef struct LeaveRoomResponse {
 	unsigned int status;
 }LeaveRoomResponse;
 
+
+
+
 enum ResponseCodes { 
 	loginResponseCode =0, 
 	signupResponseCode,
@@ -143,13 +146,6 @@ enum ResponseStatus {
 	createRoomSuccess,
 	createRoomError
 };
-	//Login and Signup
-	//unsigned char loginResponseCode = 0;
-	//unsigned char signupResponseCode = 1;
-
-
-	//Error
-	//unsigned char errorResponseCode = 16;
 
 enum RequestCodes {
 	loginRequestCode = 20, 
@@ -159,8 +155,10 @@ enum RequestCodes {
 	getPlayersInRoomRequest,
 	joinRoomRequest,
 	getStatisticsRequest,
-	logoutRequest
+	logoutRequest,
+	closeRoomRequest,
+	startGameRequest,
+	getRoomStateRequest,
+	leaveRoomRequest
 };
-	//Login and Signup
-	//unsigned char loginRequestCode = 20;
-	//unsigned char signupRequestCode = 21;
+
