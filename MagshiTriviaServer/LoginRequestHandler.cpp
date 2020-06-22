@@ -1,8 +1,11 @@
 #include "LoginRequestHandler.hpp"
 #include <iostream>
-#include "LoginManager.hpp"
 #include "JsonRequestPacketDeserializer.hpp"
 #include "RequestHandlerFactory.hpp"
+
+LoginRequestHandler::LoginRequestHandler(RequestHandlerFactory* factory) {
+	this->_factory = factory;
+}
 
 bool LoginRequestHandler::isRequestValid(RequestInfo requestInfo) {
 	return(requestInfo.messageCode == RequestCodes::loginRequestCode or requestInfo.messageCode == RequestCodes::signupRequestCode);
@@ -22,19 +25,17 @@ RequestResult LoginRequestHandler::handleRequest(RequestInfo requestInfo) {
 }
 
 RequestResult LoginRequestHandler::login(RequestInfo requestInfo) {
-	RequestHandlerFactory handlerFactory;
-	LoginManager loginManager;
 	RequestResult requestRes;
 	LoginResponse response;
 	try {
 		LoginRequest request = JsonRequestPacketDeserializer::deserializeLoginRequest(requestInfo.buffer);
-		loginManager.login(request.userName, request.password);
+		this->_factory->getLoginManager().login(request.userName, request.password);
 		response.status = ResponseStatus::loginSuccess;
-		requestRes.irequestHandler = handlerFactory.createMenuRequestHandler();
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler();
 	}
 	catch (std::exception & e) {
 		response.status = ResponseStatus::loginError;
-		requestRes.irequestHandler = handlerFactory.createLoginRequestHandler();
+		requestRes.irequestHandler = this->_factory->createLoginRequestHandler();
 	}
 	requestRes.buffer = JsonResponsePacketSerializer::serializeResponse(response);
 	return requestRes;
@@ -42,18 +43,16 @@ RequestResult LoginRequestHandler::login(RequestInfo requestInfo) {
 
 RequestResult LoginRequestHandler::signup(RequestInfo requestInfo) {
 	SignupResponse response;
-	RequestHandlerFactory handlerFactory;
-	LoginManager loginManager;
 	RequestResult requestRes;
 	try {
 		SignupRequest request = JsonRequestPacketDeserializer::deserializeSignUpRequest(requestInfo.buffer);
-		loginManager.signup(request.username, request.password, request.email);
+		this->_factory->getLoginManager().signup(request.username, request.password, request.email);
 		response.status = ResponseStatus::signUpSuccess;
-		requestRes.irequestHandler = handlerFactory.createLoginRequestHandler();
+		requestRes.irequestHandler = this->_factory->createLoginRequestHandler();
 	}
 	catch (std::exception & e) {
 		response.status = ResponseStatus::signUpError;
-		requestRes.irequestHandler = handlerFactory.createLoginRequestHandler();
+		requestRes.irequestHandler = this->_factory->createLoginRequestHandler();
 	}
 	requestRes.buffer = JsonResponsePacketSerializer::serializeResponse(response);
 	return requestRes;

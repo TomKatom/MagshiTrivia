@@ -1,22 +1,21 @@
 #pragma once
 #include "LoginManager.hpp"
+#include "RoomManager.hpp"
 #include "LoginRequestHandler.hpp"
 #include "MenuRequestHandler.hpp"
+
 class RequestHandlerFactory
 {
 public:
 	RequestHandlerFactory() { };
-	LoginRequestHandler* createLoginRequestHandler() { return new LoginRequestHandler; }
-	MenuRequestHandler* createMenuRequestHandler() { return new MenuRequestHandler; }
+	LoginRequestHandler* createLoginRequestHandler();
+	MenuRequestHandler* createMenuRequestHandler();
 
-	//V2
-	
-
-	//LoginManager& getLoginManager();
-
+	LoginManager& getLoginManager();
+	RoomManager& getRoomManager();
 
 private:
 	LoginManager m_loginManager;
-
+	RoomManager m_roomManager;
 };
 

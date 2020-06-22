@@ -2,7 +2,7 @@
 #include <algorithm>
 
 void RoomManager::createRoom( RoomData room) {
-	if (std::find_if(this->m_rooms.begin(), this->m_rooms.end(), [&](auto currRoom) {return currRoom.second.getName() == room.name; }) == this->m_rooms.end()) {
+	if (std::find_if(this->m_rooms.begin(), this->m_rooms.end(), [&](auto currRoom) {return currRoom.second.getName() == room.name; }) != this->m_rooms.end()) {
 		throw std::exception("Room with this name already exists.");
 	}
 	else {
