@@ -84,27 +84,19 @@ std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(Creat
 
 std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetStatisticsResponse res) {
 	std::vector<unsigned char> buffer;
-	json j, userStatisticsJson, temp;
-	json highScoresJson = json::array();
+	json j;
 
-	userStatisticsJson["numOfPlayerGames"] = res.userStatistics.numOfPlayerGames;
-	userStatisticsJson["numOfTotalAnswers"] = res.userStatistics.numberOfTotalAnswers;
-	userStatisticsJson["numOfCorrectAnswers"] = res.userStatistics.numOfCorrectAnswers;
-	userStatisticsJson["correctAnswersPercentage"] = res.userStatistics.correctAnswersPercentage;
-
-
-	for (int i = 0; i < res.highScores.size(); i++) {
-		temp["playerName"] = res.highScores[i].playerName;
-		temp["playerScore"] = res.highScores[i].playerScore;
-	
-		highScoresJson[i] = temp;
+	j["numOfPlayerGames"] = res.userStatistics.numOfPlayerGames;
+	j["numOfTotalAnswers"] = res.userStatistics.numberOfTotalAnswers;
+	j["numOfCorrectAnswers"] = res.userStatistics.numOfCorrectAnswers;
+	j["averageTimeForAnswer"] = res.userStatistics.averageTimeForAnswer;
+	for (auto& c : j.dump()) {
+		buffer.push_back(c);
 	}
 
-
-	j["userStatistics"] = userStatisticsJson;
-	j["highScores"] = highScoresJson;
-
-	return j;
+	JsonResponsePacketSerializer::insertInt2Vector(buffer, buffer.size());
+	buffer.insert(buffer.begin(), logoutResponseCode);
+	return buffer;
 }
 
 std::vector<unsigned char>  JsonResponsePacketSerializer::serializeResponse(CloseRoomResponse res) {

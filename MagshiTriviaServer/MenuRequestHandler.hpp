@@ -7,11 +7,12 @@ class RequestHandlerFactory;
 class MenuRequestHandler : public IRequestHandler
 {
 public:
-	MenuRequestHandler(RequestHandlerFactory* factory);
+	MenuRequestHandler(RequestHandlerFactory* factory, LoggedUser user);
 	bool isRequestValid(RequestInfo requestInfo);
 	RequestResult handleRequest(RequestInfo requestInfo);
 
 private:
+	LoggedUser m_loggedUser;
 	RequestHandlerFactory* _factory;
 	RequestResult signout(RequestInfo);
 	RequestResult getRooms(RequestInfo);

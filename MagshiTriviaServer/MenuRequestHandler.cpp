@@ -2,8 +2,9 @@
 #include "JsonRequestPacketDeserializer.hpp"
 #include "RequestHandlerFactory.hpp"
 
-MenuRequestHandler::MenuRequestHandler(RequestHandlerFactory* factory) {
+MenuRequestHandler::MenuRequestHandler(RequestHandlerFactory* factory, LoggedUser user) {
 	this->_factory = factory;
+	this->m_loggedUser = user;
 }
 
 bool MenuRequestHandler::isRequestValid(RequestInfo requestInfo) {
@@ -11,10 +12,13 @@ bool MenuRequestHandler::isRequestValid(RequestInfo requestInfo) {
 }
 
 RequestResult MenuRequestHandler::handleRequest(RequestInfo requestInfo) {
-	RequestResult result;
+ 	RequestResult result;
 	switch (requestInfo.messageCode) {
 		case RequestCodes::createRoomRequest:
 			result = this->createRoom(requestInfo);
+			break;
+		case RequestCodes::getStatisticsRequest:
+			result = this->getStatistics(requestInfo);
 			break;
 	}
 	return result;
@@ -27,7 +31,7 @@ RequestResult MenuRequestHandler::signout(RequestInfo requestInfo) {
 		LogoutRequest logoutRequest = JsonRequestPacketDeserializer::deserializeLogoutRequest(requestInfo.buffer);
 		this->_factory->getLoginManager().logout(logoutRequest.username);
 		response.status = ResponseStatus::logoutSuccess;
-		requestRes.irequestHandler = this->_factory->createMenuRequestHandler();
+		requestRes.irequestHandler = this->_factory->createLoginRequestHandler();
 	}
 	catch (std::exception & e) {
 		response.status = ResponseStatus::logoutError;
@@ -43,19 +47,30 @@ RequestResult MenuRequestHandler::getRooms(RequestInfo) {
 	try {
 		response.rooms = this->_factory->getRoomManager().getRooms();
 		response.status = ResponseStatus::getRoomsSuccess;
-		requestRes.irequestHandler = this->_factory->createMenuRequestHandler();
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	}
 	catch (std::exception & e) {
 		response.status = ResponseStatus::getRoomsError;
-		requestRes.irequestHandler = this->_factory->createMenuRequestHandler();
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	}
 	requestRes.buffer = JsonResponsePacketSerializer::serializeResponse(response);
 	return requestRes;
 }
 
-RequestResult MenuRequestHandler::getStatistics(RequestInfo) {
+RequestResult MenuRequestHandler::getStatistics(RequestInfo requestInfo) {
 	
-	return RequestResult{};
+	RequestResult requestRes;
+	UserStatistics response;
+	
+	try {
+		response = this->_factory->getStatisticManager().getStatistics(this->m_loggedUser.getUsername());
+		requestRes.buffer = JsonResponsePacketSerializer::serializeResponse(GetStatisticsResponse{0, response});
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
+	}
+	catch (std::exception & e) {
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
+	}
+	return requestRes;
 }
 
 
@@ -66,10 +81,10 @@ RequestResult MenuRequestHandler::getPlayersInRoom(RequestInfo requestInfo) {
 		GetPlayersInRoomRequest getPlayersInRoomRequest = JsonRequestPacketDeserializer::deserializeGetPlayersInRoomRequest(requestInfo.buffer);
 
 		response.players = this->_factory->getRoomManager().getPlayersInRoom(getPlayersInRoomRequest.roomId);
-		requestRes.irequestHandler = this->_factory->createMenuRequestHandler();
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	}
 	catch (std::exception & e) {
-		requestRes.irequestHandler = this->_factory->createMenuRequestHandler();
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	}
 	requestRes.buffer = JsonResponsePacketSerializer::serializeResponse(response);
 	return requestRes;
@@ -82,11 +97,11 @@ RequestResult MenuRequestHandler::joinRoom(RequestInfo  requestInfo) {
 		JoinRoomRequest joinRoomRequest = JsonRequestPacketDeserializer::deserializeJoinRoomRequest(requestInfo.buffer);
 		response.status = ResponseStatus::joinRoomSuccess;
 		//response.players = roomManager.join(getPlayersInRoomRequest.roomId);
-		requestRes.irequestHandler = this->_factory->createMenuRequestHandler();
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	}
 	catch (std::exception & e) {
 		response.status = ResponseStatus::joinRoomError;
-		requestRes.irequestHandler = this->_factory->createMenuRequestHandler();
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	}
 	requestRes.buffer = JsonResponsePacketSerializer::serializeResponse(response);
 	return requestRes;
@@ -108,11 +123,11 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo requestInfo) {
 
 		this->_factory->getRoomManager().createRoom(roomData);
 		response.status = ResponseStatus::createRoomSuccess;
-		requestRes.irequestHandler = this->_factory->createMenuRequestHandler();
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	}
 	catch (std::exception & e) {
 		response.status = ResponseStatus::createRoomError;
-		requestRes.irequestHandler = this->_factory->createMenuRequestHandler();
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	}
 	requestRes.buffer = JsonResponsePacketSerializer::serializeResponse(response);
 	return requestRes;

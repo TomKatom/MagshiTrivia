@@ -68,7 +68,7 @@ typedef struct UserStatistics {
 	unsigned int numOfPlayerGames;
 	unsigned int numOfCorrectAnswers;
 	unsigned int numberOfTotalAnswers;
-	double correctAnswersPercentage;
+	double averageTimeForAnswer;
 }UserStatistics;
 
 typedef struct HighScore {
@@ -79,7 +79,6 @@ typedef struct HighScore {
 typedef struct GetStatisticsResponse {
 	unsigned int status;
 	UserStatistics userStatistics;
-	std::vector<HighScore> highScores;
 }GetStatisticsResponse;
 
 
