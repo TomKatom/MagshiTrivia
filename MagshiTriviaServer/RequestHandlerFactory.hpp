@@ -14,6 +14,9 @@ public:
 
 	//LoginManager& getLoginManager();
 
+	//v3
+
+
 
 private:
 	LoginManager m_loginManager;
