@@ -150,11 +150,14 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MenuRequestHandler.cpp" />
     <ClCompile Include="MongoDatabase.cpp" />
+    <ClCompile Include="Question.cpp" />
     <ClCompile Include="RequestHandlerFactory.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="RoomAdminRequestHandler.cpp" />
     <ClCompile Include="RoomManager.cpp" />
+    <ClCompile Include="RoomMemberRequestHandler.cpp" />
     <ClCompile Include="Server.cpp" />
+    <ClCompile Include="StatisticsManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Communicator.hpp" />
@@ -167,12 +170,15 @@
     <ClInclude Include="LoginRequestHandler.hpp" />
     <ClInclude Include="MenuRequestHandler.hpp" />
     <ClInclude Include="MongoDatabase.hpp" />
+    <ClInclude Include="Question.hpp" />
     <ClInclude Include="RequestHandlerFactory.hpp" />
     <ClInclude Include="Room.hpp" />
     <ClInclude Include="RoomAdminRequestHandler.hpp" />
     <ClInclude Include="RoomData.hpp" />
     <ClInclude Include="RoomManager.hpp" />
+    <ClInclude Include="RoomMemberRequestHandler.hpp" />
     <ClInclude Include="Server.hpp" />
+    <ClInclude Include="StatisticsManager.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

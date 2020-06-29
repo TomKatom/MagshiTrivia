@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "RoomData.hpp"
+#include "Room.hpp"
 
 class IRequestHandler;
 class Communicator;
@@ -49,7 +49,7 @@ typedef struct LogoutResponse {
 
 typedef struct GetRoomsResponse {
 	unsigned int status;
-	std::vector<RoomData> rooms;
+	std::vector<Room> rooms;
 }GetRoomsResponse;
 
 typedef struct GetPlayersInRoomResponse {
@@ -61,6 +61,7 @@ typedef struct JoinRoomResponse {
 }JoinRoomResponse;
 
 typedef struct CreateRoomResponse {
+	unsigned int roomId;
 	unsigned int status;
 }CreateRoomResponse;
 
@@ -68,7 +69,7 @@ typedef struct UserStatistics {
 	unsigned int numOfPlayerGames;
 	unsigned int numOfCorrectAnswers;
 	unsigned int numberOfTotalAnswers;
-	double correctAnswersPercentage;
+	double averageTimeForAnswer;
 }UserStatistics;
 
 typedef struct HighScore {
@@ -79,7 +80,6 @@ typedef struct HighScore {
 typedef struct GetStatisticsResponse {
 	unsigned int status;
 	UserStatistics userStatistics;
-	std::vector<HighScore> highScores;
 }GetStatisticsResponse;
 
 
@@ -107,9 +107,9 @@ typedef struct CloseRoomResponse {
 	unsigned int status;
 }CloseRoomResponse;
 
-typedef struct StartRoomResponse {
+typedef struct StartGameResponse {
 	unsigned int status;
-}StartRoomResponse;
+}StartGameResponse;
 
 typedef struct GetRoomStateResponse {
 	unsigned int status;
@@ -144,7 +144,15 @@ enum ResponseStatus {
 	joinRoomSuccess,
 	joinRoomError,
 	createRoomSuccess,
-	createRoomError
+	createRoomError,
+	closeRoomSuccess,
+	closeRoomError,
+	startGameSuccess,
+	startGameError,
+	getRoomStateSuccess,
+	getRoomStateError,
+	leaveRoomSuccess,
+	leaveRoomError
 };
 
 enum RequestCodes {

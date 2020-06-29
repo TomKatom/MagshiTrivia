@@ -11,6 +11,7 @@
 #include <mongocxx/stdx.hpp>
 #include <mongocxx/uri.hpp>
 #include <mongocxx/instance.hpp>
+#include "nlohmann/json.hpp"
 
 using bsoncxx::builder::stream::close_array;
 using bsoncxx::builder::stream::close_document;
@@ -20,6 +21,7 @@ using bsoncxx::builder::stream::open_array;
 using bsoncxx::builder::stream::open_document;
 
 using std::string;
+using namespace nlohmann;
 
 MongoDatabase::MongoDatabase() {
 	this->_client = new mongocxx::client(mongocxx::uri{});
@@ -33,6 +35,11 @@ void MongoDatabase::addNewUser(string name, string password, string email) {
 		<< "username" << name
 		<< "password" << password
 		<< "email" << email
+		<< "gameCount" << 0
+		<< "correctAnswerCount" << 0
+		<< "answerCount" << 0
+		<< "wrongAnswerCount" << 0
+		<< "averageTimeForAnswer" << 0
 		<< bsoncxx::builder::stream::finalize;
 	auto result = users.insert_one(doc_value.view());
 }
@@ -45,4 +52,41 @@ bool MongoDatabase::doesUserExist(string username) {
 	mongocxx::collection users = this->_db["users"];
 	auto result = users.find_one(document{} << "username" << username << finalize);
 	return result ? true : false;
+}
+
+
+std::list<Question> MongoDatabase::getQuestions(int x)
+{
+	mongocxx::collection questions = this->_db["questions"];
+	mongocxx::cursor result = questions.find(document{} << "$sample" << document{} << "size" << x << finalize);
+	std::list<Question> questionList;
+	return questionList;
+}
+float MongoDatabase::getAverageAnswerTime(std::string name)
+{
+	mongocxx::collection users = this->_db["users"];
+	auto result = users.find_one(document{} << "username" << name << finalize);
+	json j = json::parse(bsoncxx::to_json(result->view()));
+	return j["averageTimeForAnswer"];
+}
+int MongoDatabase::getNumOfCorrectAnswers(std::string name)
+{
+	mongocxx::collection users = this->_db["users"];
+	auto result = users.find_one(document{} << "username" << name << finalize);
+	json j = json::parse(bsoncxx::to_json(result->view()));
+	return j["correctAnswerCount"];
+}
+int MongoDatabase::getNumOfTotalAnswers(std::string name)
+{
+	mongocxx::collection users = this->_db["users"];
+	auto result = users.find_one(document{} << "username" << name << finalize);
+	json j = json::parse(bsoncxx::to_json(result->view()));
+	return j["answerCount"];
+}
+int MongoDatabase::getNumOfPlayerGames(std::string name)
+{
+	mongocxx::collection users = this->_db["users"];
+	auto result = users.find_one(document{} << "username" << name << finalize);
+	json j = json::parse(bsoncxx::to_json(result->view()));
+	return j["gameCount"];
 }

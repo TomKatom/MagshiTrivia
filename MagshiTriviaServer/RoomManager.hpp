@@ -3,10 +3,10 @@
 #include <map>
 class RoomManager {
 public:
-	void createRoom(RoomData room);
+	int createRoom(RoomData room);
 	void deleteRoom(int id);
 	bool getRoomState(int id);
-	std::vector<RoomData> getRooms() const;
+	std::map<int, Room>& getRooms();
 	std::vector<std::string> getPlayersInRoom(int id);
 
 private:

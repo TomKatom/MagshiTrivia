@@ -1,14 +1,15 @@
 #include "RoomManager.hpp"
 #include <algorithm>
 
-void RoomManager::createRoom( RoomData room) {
-	if (std::find_if(this->m_rooms.begin(), this->m_rooms.end(), [&](auto currRoom) {return currRoom.second.getName() == room.name; }) == this->m_rooms.end()) {
+int RoomManager::createRoom( RoomData room) {
+	if (std::find_if(this->m_rooms.begin(), this->m_rooms.end(), [&](auto currRoom) {return currRoom.second.getName() == room.name; }) != this->m_rooms.end()) {
 		throw std::exception("Room with this name already exists.");
 	}
 	else {
 		this->_roomIdCount++;
-		this->m_rooms.insert(std::pair(this->_roomIdCount, Room(this->_roomIdCount, room.name, room.maxPlayers, room.timePerQuestion)));
+		this->m_rooms.insert(std::pair(this->_roomIdCount, Room(this->_roomIdCount, room.name, room.maxPlayers, room.timePerQuestion, room.questionsCount)));
 	}
+	return _roomIdCount;
 }
 
 void RoomManager::deleteRoom(int id) {
@@ -24,13 +25,8 @@ bool RoomManager::getRoomState(int id) {
 	}
 }
 
-std::vector<RoomData> RoomManager::getRooms() const{
-	std::vector<RoomData> rooms;
-	for (auto room : this->m_rooms) {
-		RoomData temp{room.second.getName(), room.second.getMaxPlayers(), room.second.getTimePerQuestion(), room.second.getQuestionsCount() };
-		rooms.push_back(temp);
-	}
-	return rooms;
+std::map<int, Room>& RoomManager::getRooms() {
+	return this->m_rooms;
 }
 
 std::vector<std::string> RoomManager::getPlayersInRoom(int id)  {

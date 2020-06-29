@@ -17,6 +17,7 @@ private:
 	RequestHandlerFactory* _factory;
 
 	RequestResult closeRoom(RequestInfo requestInfo);
-
+	RequestResult startGame(RequestInfo requestInfo);
+	RequestResult getRoomState(RequestInfo requestInfo);
 };
 

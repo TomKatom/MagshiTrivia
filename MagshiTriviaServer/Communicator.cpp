@@ -63,7 +63,8 @@ void Communicator::handleNewClient(sf::TcpSocket* client) {
 		std::lock_guard<std::mutex> clientLockGuard(this->_clientLock);
 		RequestInfo requestInfo = JsonRequestPacketDeserializer::getRequestInfo(buffer);
 		if (this->m_clients.find(client)->second->isRequestValid(requestInfo)) {
-			RequestResult requestResult =  this->m_clients.find(client)->second->handleRequest(requestInfo);
+			RequestResult requestResult = this->m_clients.find(client)->second->handleRequest(requestInfo);
+			this->m_clients.find(client)->second = requestResult.irequestHandler;
 			buffer = requestResult.buffer;
 			for (int i = 0; i < buffer.size(); i++) {
 				data[i] = buffer[i];

@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #include <vector>
 #include "LoggedUser.hpp"
@@ -5,9 +6,10 @@
 class Room {
 public:
 	Room() = default;
-	Room(int id, std::string name, int maxPlayers, unsigned int timePerQuestion);
+	Room(int id, std::string name, int maxPlayers, unsigned int timePerQuestion, int questionCount);
 	void addUser(LoggedUser user);
 	void removeUser(LoggedUser user);
+	int getID();
 	std::list<LoggedUser> getAllUsers() const;
 	std::string getName();
 	bool getState();

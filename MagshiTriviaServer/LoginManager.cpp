@@ -1,29 +1,29 @@
-#define _SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING
 #include "LoginManager.hpp"
-#include "MongoDatabase.hpp"
 #include <algorithm>
 
-LoginManager::LoginManager() {
-	this->m_database = new MongoDatabase();
+LoginManager::LoginManager(IDatabase* db) {
+	this->m_database = db;
 }
 LoginManager::~LoginManager() {
 	delete this->m_database;
 }
 
-void LoginManager::login(std::string username, std::string password) {
+LoggedUser* LoginManager::login(std::string username, std::string password) {
+	LoggedUser* user = nullptr;
 	if (std::find_if(this->m_loggedUsers.begin(), this->m_loggedUsers.end(), [&](auto user) {return user.getUsername() == username; }) == this->m_loggedUsers.end()) {
-
 		if (this->m_database->doesPasswordMatch(username, password)) { 
-			this->m_loggedUsers.push_back(LoggedUser(username)); 
+			user = new LoggedUser(username);
+			this->m_loggedUsers.push_back(*user); 
+			return user;
 		}
 		else {
 			throw std::exception("User doesn't exist.");
-
 		}
 	}
 	else {
 		throw std::exception("User already logged in.");
 	}
+	return nullptr;
 }
 
 void LoginManager::signup(std::string username, std::string password, std::string email) {

@@ -8,3 +8,7 @@ LoggedUser::LoggedUser(std::string username) {
 std::string LoggedUser::getUsername() {
 	return this->m_username;
 }
+
+int LoggedUser::getRoomId() {
+	return this->roomId;
+}

@@ -1,113 +1,132 @@
 #include "MenuRequestHandler.hpp"
 #include "JsonRequestPacketDeserializer.hpp"
-#include "LoginManager.hpp"
 #include "RequestHandlerFactory.hpp"
-#include "RoomManager.hpp"
-#include "RoomData.hpp"
+
+MenuRequestHandler::MenuRequestHandler(RequestHandlerFactory* factory, LoggedUser user) {
+	this->_factory = factory;
+	this->m_loggedUser = user;
+}
 
 bool MenuRequestHandler::isRequestValid(RequestInfo requestInfo) {
 	return (requestInfo.messageCode >= RequestCodes::createRoomRequest and requestInfo.messageCode <= RequestCodes::logoutRequest);
 }
 
 RequestResult MenuRequestHandler::handleRequest(RequestInfo requestInfo) {
+ 	RequestResult result;
 	switch (requestInfo.messageCode) {
-	case RequestCodes::createRoomRequest:
-		
-		break;
+		case RequestCodes::createRoomRequest:
+			result = this->createRoom(requestInfo);
+			break;
+		case RequestCodes::getStatisticsRequest:
+			result = this->getStatistics(requestInfo);
+			break;
+		case RequestCodes::getRoomsRequest:
+			result = this->getRooms(requestInfo);
+			break;
+		case RequestCodes::getPlayersInRoomRequest:
+			result = this->getPlayersInRoom(requestInfo);
+			break;
+		case RequestCodes::joinRoomRequest:
+			result = this->joinRoom(requestInfo);
+			break;
 	}
-	return RequestResult{};
+	return result;
 }
 
 RequestResult MenuRequestHandler::signout(RequestInfo requestInfo) {
-	LoginManager loginManager;
 	LogoutResponse response;
 	RequestResult requestRes;
-	RequestHandlerFactory handlerFactory;
-
 	try {
 		LogoutRequest logoutRequest = JsonRequestPacketDeserializer::deserializeLogoutRequest(requestInfo.buffer);
-		loginManager.logout(logoutRequest.username);
+		this->_factory->getLoginManager().logout(logoutRequest.username);
 		response.status = ResponseStatus::logoutSuccess;
-		requestRes.irequestHandler = handlerFactory.createMenuRequestHandler();
+		requestRes.irequestHandler = this->_factory->createLoginRequestHandler();
 	}
 	catch (std::exception & e) {
 		response.status = ResponseStatus::logoutError;
-		requestRes.irequestHandler = handlerFactory.createLoginRequestHandler();
+		requestRes.irequestHandler = this->_factory->createLoginRequestHandler();
 	}
 	requestRes.buffer = JsonResponsePacketSerializer::serializeResponse(response);
 	return requestRes;
 }
 
 RequestResult MenuRequestHandler::getRooms(RequestInfo) {
-	RoomManager roomManager;
 	GetRoomsResponse response;
 	RequestResult requestRes;
-	RequestHandlerFactory handlerFactory;
-
+	std::vector<Room> rooms;
 	try {
-		response.rooms = roomManager.getRooms();
+		for (auto room : this->_factory->getRoomManager().getRooms()) {
+			rooms.push_back(room.second);
+		}
+		response.rooms = rooms;
 		response.status = ResponseStatus::getRoomsSuccess;
-		requestRes.irequestHandler = handlerFactory.createMenuRequestHandler();
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	}
 	catch (std::exception & e) {
 		response.status = ResponseStatus::getRoomsError;
-		requestRes.irequestHandler = handlerFactory.createMenuRequestHandler();
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	}
 	requestRes.buffer = JsonResponsePacketSerializer::serializeResponse(response);
 	return requestRes;
 }
 
-RequestResult MenuRequestHandler::getStatistics(RequestInfo) {
+RequestResult MenuRequestHandler::getStatistics(RequestInfo requestInfo) {
 	
-	return RequestResult{};
+	RequestResult requestRes;
+	UserStatistics response;
+	
+	try {
+		response = this->_factory->getStatisticManager().getStatistics(this->m_loggedUser.getUsername());
+		requestRes.buffer = JsonResponsePacketSerializer::serializeResponse(GetStatisticsResponse{0, response});
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
+	}
+	catch (std::exception & e) {
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
+	}
+	return requestRes;
 }
 
 
 RequestResult MenuRequestHandler::getPlayersInRoom(RequestInfo requestInfo) {
-	RoomManager roomManager;
 	GetPlayersInRoomResponse response;
 	RequestResult requestRes;
-	RequestHandlerFactory handlerFactory;
-
 	try {
 		GetPlayersInRoomRequest getPlayersInRoomRequest = JsonRequestPacketDeserializer::deserializeGetPlayersInRoomRequest(requestInfo.buffer);
 
-		response.players= roomManager.getPlayersInRoom(getPlayersInRoomRequest.roomId);
-		requestRes.irequestHandler = handlerFactory.createMenuRequestHandler();
+		response.players = this->_factory->getRoomManager().getPlayersInRoom(getPlayersInRoomRequest.roomId);
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
+		requestRes.buffer = JsonResponsePacketSerializer::serializeResponse(response);
 	}
 	catch (std::exception & e) {
-		requestRes.irequestHandler = handlerFactory.createMenuRequestHandler();
+		ErrorResponse response;
+		response.message = "Room Doesn't exists";
+		requestRes.buffer = JsonResponsePacketSerializer::serializeResponse(response);
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	}
-	requestRes.buffer = JsonResponsePacketSerializer::serializeResponse(response);
+	
 	return requestRes;
 }
 
 RequestResult MenuRequestHandler::joinRoom(RequestInfo  requestInfo) {
-	RoomManager roomManager;
 	JoinRoomResponse response;
 	RequestResult requestRes;
-	RequestHandlerFactory handlerFactory;
-
 	try {
 		JoinRoomRequest joinRoomRequest = JsonRequestPacketDeserializer::deserializeJoinRoomRequest(requestInfo.buffer);
+		this->_factory->getRoomManager().getRooms()[joinRoomRequest.roomId].addUser(this->m_loggedUser);
 		response.status = ResponseStatus::joinRoomSuccess;
-		//response.players = roomManager.join(getPlayersInRoomRequest.roomId);
-		requestRes.irequestHandler = handlerFactory.createMenuRequestHandler();
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	}
 	catch (std::exception & e) {
 		response.status = ResponseStatus::joinRoomError;
-		requestRes.irequestHandler = handlerFactory.createMenuRequestHandler();
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	}
 	requestRes.buffer = JsonResponsePacketSerializer::serializeResponse(response);
 	return requestRes;
 }
 
 RequestResult MenuRequestHandler::createRoom(RequestInfo requestInfo) {
-	RoomManager roomManager;
 	CreateRoomResponse response;
 	RequestResult requestRes;
-	RequestHandlerFactory handlerFactory;
-
 	try {
 		CreateRoomRequest createRoomRequest = JsonRequestPacketDeserializer::deserializeCreateRoomRequest(requestInfo.buffer);
 		RoomData roomData;
@@ -119,13 +138,13 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo requestInfo) {
 	/*	{ createRoomRequest.roomName, createRoomRequest.maxUsers,
 			createRoomRequest.answerTimeout, createRoomRequest.questionCount };*/
 
-		roomManager.createRoom(roomData);
+		response.roomId = this->_factory->getRoomManager().createRoom(roomData);
 		response.status = ResponseStatus::createRoomSuccess;
-		requestRes.irequestHandler = handlerFactory.createMenuRequestHandler();
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	}
 	catch (std::exception & e) {
 		response.status = ResponseStatus::createRoomError;
-		requestRes.irequestHandler = handlerFactory.createMenuRequestHandler();
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	}
 	requestRes.buffer = JsonResponsePacketSerializer::serializeResponse(response);
 	return requestRes;

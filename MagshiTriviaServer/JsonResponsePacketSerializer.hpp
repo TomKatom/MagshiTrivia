@@ -21,7 +21,7 @@ public:
 
 	//V3
 	static std::vector<unsigned char>  serializeResponse(CloseRoomResponse);
-	static std::vector<unsigned char>  serializeResponse(StartRoomResponse);
+	static std::vector<unsigned char>  serializeResponse(StartGameResponse);
 	static std::vector<unsigned char>  serializeResponse(GetRoomStateResponse);
 	static std::vector<unsigned char>  serializeResponse(LeaveRoomResponse);
 

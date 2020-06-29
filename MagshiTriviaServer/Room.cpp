@@ -2,11 +2,12 @@
 #include <algorithm>
 
 
-Room::Room(int id, std::string name, int maxPlayers, unsigned int timePerQuestion) {
+Room::Room(int id, std::string name, int maxPlayers, unsigned int timePerQuestion, int questionCount) {
 	this->_id = id;
 	this->_name = name;
 	this->_maxPlayers = maxPlayers;
 	this->_timePerQuestion = timePerQuestion;
+	this->_questionsCount = questionCount;
 	this->_isActive = false;
 }
 
@@ -54,4 +55,7 @@ unsigned int Room::getTimePerQuestion() const {
 
 int Room::getQuestionsCount() const {
 	return this->_questionsCount;
+}
+int Room::getID() {
+	return this->_id;
 }
