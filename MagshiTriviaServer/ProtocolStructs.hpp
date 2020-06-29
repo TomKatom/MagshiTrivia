@@ -113,8 +113,11 @@ typedef struct StartGameResponse {
 
 typedef struct GetRoomStateResponse {
 	unsigned int status;
+	int id;
 	bool hasGameBegun;
+	std::string name;
 	std::vector<std::string> players;
+	unsigned int maxPlayers;
 	unsigned int questionCount;
 	unsigned int answerTimeout;
 }GetRoomStateResponse;

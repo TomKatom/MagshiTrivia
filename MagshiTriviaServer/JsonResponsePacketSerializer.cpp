@@ -135,6 +135,9 @@ std::vector<unsigned char>  JsonResponsePacketSerializer::serializeResponse(GetR
 	j["players"] = playersJson;
 	j["questionCount"] = res.questionCount;
 	j["answerTimeout"] = res.answerTimeout;
+	j["maxPlayers"] = res.maxPlayers;
+	j["name"] = res.name;
+	j["id"] = res.id;
 
 	return j;
 }
