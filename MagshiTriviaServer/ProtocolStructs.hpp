@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "RoomData.hpp"
+#include "Room.hpp"
 
 class IRequestHandler;
 class Communicator;
@@ -49,7 +49,7 @@ typedef struct LogoutResponse {
 
 typedef struct GetRoomsResponse {
 	unsigned int status;
-	std::vector<RoomData> rooms;
+	std::vector<Room> rooms;
 }GetRoomsResponse;
 
 typedef struct GetPlayersInRoomResponse {

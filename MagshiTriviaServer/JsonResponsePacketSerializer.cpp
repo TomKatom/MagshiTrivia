@@ -42,9 +42,11 @@ std::vector<unsigned char>  JsonResponsePacketSerializer::serializeResponse(GetR
 
 
 	for (int i = 0; i < res.rooms.size(); i++) {
-		temp["name"] = res.rooms[i].name;
-		temp["maxPlayers"] = res.rooms[i].maxPlayers;
-		temp["timePerQuestion"] = res.rooms[i].timePerQuestion;
+		temp["id"] = res.rooms[i].getID();
+		temp["name"] = res.rooms[i].getName();
+		temp["maxPlayers"] = res.rooms[i].getMaxPlayers();
+		temp["timePerQuestion"] = res.rooms[i].getTimePerQuestion();
+		temp["questionsCount"] = res.rooms[i].getQuestionsCount();
 
 		roomsArray[i] = temp;
 	}
@@ -63,7 +65,7 @@ std::vector<unsigned char>  JsonResponsePacketSerializer::serializeResponse(GetR
 std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetPlayersInRoomResponse res) {
 	std::vector<unsigned char> buffer;
 	json j;
-	j["PlayersInRoom"] = res.players;
+	j["players"] = res.players;
 
 	for (auto& c : j.dump()) {
 		buffer.push_back(c);

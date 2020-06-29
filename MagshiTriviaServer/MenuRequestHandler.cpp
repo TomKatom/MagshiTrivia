@@ -20,6 +20,15 @@ RequestResult MenuRequestHandler::handleRequest(RequestInfo requestInfo) {
 		case RequestCodes::getStatisticsRequest:
 			result = this->getStatistics(requestInfo);
 			break;
+		case RequestCodes::getRoomsRequest:
+			result = this->getRooms(requestInfo);
+			break;
+		case RequestCodes::getPlayersInRoomRequest:
+			result = this->getPlayersInRoom(requestInfo);
+			break;
+		case RequestCodes::joinRoomRequest:
+			result = this->joinRoom(requestInfo);
+			break;
 	}
 	return result;
 }
@@ -44,8 +53,12 @@ RequestResult MenuRequestHandler::signout(RequestInfo requestInfo) {
 RequestResult MenuRequestHandler::getRooms(RequestInfo) {
 	GetRoomsResponse response;
 	RequestResult requestRes;
+	std::vector<Room> rooms;
 	try {
-		response.rooms = this->_factory->getRoomManager().getRooms();
+		for (auto room : this->_factory->getRoomManager().getRooms()) {
+			rooms.push_back(room.second);
+		}
+		response.rooms = rooms;
 		response.status = ResponseStatus::getRoomsSuccess;
 		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	}
@@ -95,8 +108,8 @@ RequestResult MenuRequestHandler::joinRoom(RequestInfo  requestInfo) {
 	RequestResult requestRes;
 	try {
 		JoinRoomRequest joinRoomRequest = JsonRequestPacketDeserializer::deserializeJoinRoomRequest(requestInfo.buffer);
+		this->_factory->getRoomManager().getRooms()[joinRoomRequest.roomId].addUser(this->m_loggedUser);
 		response.status = ResponseStatus::joinRoomSuccess;
-		//response.players = roomManager.join(getPlayersInRoomRequest.roomId);
 		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	}
 	catch (std::exception & e) {

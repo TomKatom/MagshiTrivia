@@ -7,7 +7,7 @@ void RoomManager::createRoom( RoomData room) {
 	}
 	else {
 		this->_roomIdCount++;
-		this->m_rooms.insert(std::pair(this->_roomIdCount, Room(this->_roomIdCount, room.name, room.maxPlayers, room.timePerQuestion)));
+		this->m_rooms.insert(std::pair(this->_roomIdCount, Room(this->_roomIdCount, room.name, room.maxPlayers, room.timePerQuestion, room.questionsCount)));
 	}
 }
 
@@ -24,13 +24,8 @@ bool RoomManager::getRoomState(int id) {
 	}
 }
 
-std::vector<RoomData> RoomManager::getRooms() const{
-	std::vector<RoomData> rooms;
-	for (auto room : this->m_rooms) {
-		RoomData temp{room.second.getName(), room.second.getMaxPlayers(), room.second.getTimePerQuestion(), room.second.getQuestionsCount() };
-		rooms.push_back(temp);
-	}
-	return rooms;
+std::map<int, Room>& RoomManager::getRooms() {
+	return this->m_rooms;
 }
 
 std::vector<std::string> RoomManager::getPlayersInRoom(int id)  {
