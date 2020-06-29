@@ -139,7 +139,14 @@ std::vector<unsigned char>  JsonResponsePacketSerializer::serializeResponse(GetR
 	j["name"] = res.name;
 	j["id"] = res.id;
 
-	return j;
+	for (auto& c : j.dump()) {
+		buffer.push_back(c);
+	}
+
+	JsonResponsePacketSerializer::insertInt2Vector(buffer, buffer.size());
+	buffer.insert(buffer.begin(), logoutResponseCode);
+
+	return buffer;
 }
 
 std::vector<unsigned char>  JsonResponsePacketSerializer::serializeResponse(LeaveRoomResponse res) {

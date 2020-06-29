@@ -37,8 +37,7 @@ RequestResult MenuRequestHandler::signout(RequestInfo requestInfo) {
 	LogoutResponse response;
 	RequestResult requestRes;
 	try {
-		LogoutRequest logoutRequest = JsonRequestPacketDeserializer::deserializeLogoutRequest(requestInfo.buffer);
-		this->_factory->getLoginManager().logout(logoutRequest.username);
+		this->_factory->getLoginManager().logout(this->m_loggedUser.getUsername());
 		response.status = ResponseStatus::logoutSuccess;
 		requestRes.irequestHandler = this->_factory->createLoginRequestHandler();
 	}
@@ -113,8 +112,9 @@ RequestResult MenuRequestHandler::joinRoom(RequestInfo  requestInfo) {
 	try {
 		JoinRoomRequest joinRoomRequest = JsonRequestPacketDeserializer::deserializeJoinRoomRequest(requestInfo.buffer);
 		this->_factory->getRoomManager().getRooms()[joinRoomRequest.roomId].addUser(this->m_loggedUser);
+		this->m_loggedUser.setRoomId(joinRoomRequest.roomId);
 		response.status = ResponseStatus::joinRoomSuccess;
-		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
+		requestRes.irequestHandler = this->_factory->createRoomMemberHandler(this->m_loggedUser);
 	}
 	catch (std::exception & e) {
 		response.status = ResponseStatus::joinRoomError;
@@ -139,8 +139,10 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo requestInfo) {
 			createRoomRequest.answerTimeout, createRoomRequest.questionCount };*/
 
 		response.roomId = this->_factory->getRoomManager().createRoom(roomData);
+		this->_factory->getRoomManager().getRooms()[response.roomId].addUser(this->m_loggedUser);
+		this->m_loggedUser.setRoomId(response.roomId);
 		response.status = ResponseStatus::createRoomSuccess;
-		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
+		requestRes.irequestHandler = this->_factory->createRoomAdminHandler(this->m_loggedUser);
 	}
 	catch (std::exception & e) {
 		response.status = ResponseStatus::createRoomError;

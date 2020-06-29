@@ -45,9 +45,11 @@ RequestResult RoomMemberRequestHandler::getRoomState(RequestInfo requestInfo) {
 		}
 		response.players = players;
 		response.questionCount = room.getQuestionsCount();
+		requestRes.irequestHandler = this->_factory->createRoomAdminHandler(this->m_loggedUser);
 	}
 	catch (std::exception & e) {
 		response.status = ResponseStatus::closeRoomError;
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	}
 
 	requestRes.buffer = JsonResponsePacketSerializer::serializeResponse(response);
@@ -61,11 +63,13 @@ RequestResult RoomMemberRequestHandler::leaveRoom(RequestInfo requestInfo) {
 	try {
 		this->_factory->getRoomManager().getRooms()[this->m_loggedUser.getRoomId()].removeUser(this->m_loggedUser);
 		response.status = ResponseStatus::leaveRoomSuccess;
+		requestRes.irequestHandler = this->_factory->createRoomAdminHandler(this->m_loggedUser);
 	}
 	catch (std::exception & e) {
 		response.status = ResponseStatus::leaveRoomError;
 	}
 
 	requestRes.buffer = JsonResponsePacketSerializer::serializeResponse(response);
+	requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	return requestRes;
 }

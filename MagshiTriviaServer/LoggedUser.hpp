@@ -7,6 +7,7 @@ public:
 	LoggedUser(std::string username);
 	std::string getUsername();
 	int getRoomId();
+	void setRoomId(int id);
 
 private:
 	std::string m_username;

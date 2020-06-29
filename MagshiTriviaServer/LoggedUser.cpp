@@ -12,3 +12,7 @@ std::string LoggedUser::getUsername() {
 int LoggedUser::getRoomId() {
 	return this->roomId;
 }
+
+void LoggedUser::setRoomId(int id) {
+	this->roomId = id;
+}
