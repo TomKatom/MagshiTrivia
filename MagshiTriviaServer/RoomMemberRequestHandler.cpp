@@ -36,6 +36,9 @@ RequestResult RoomMemberRequestHandler::getRoomState(RequestInfo requestInfo) {
 		Room room = this->_factory->getRoomManager().getRooms()[this->m_loggedUser.getRoomId()];
 		response.answerTimeout = room.getTimePerQuestion();
 		response.hasGameBegun = room.getState();
+		response.maxPlayers = room.getMaxPlayers();
+		response.name = room.getName();
+		response.id = room.getID();
 		std::vector<std::string> players;
 		for (auto& user : room.getAllUsers()) {
 			players.push_back(user.getUsername());

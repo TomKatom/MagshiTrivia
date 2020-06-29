@@ -3,6 +3,8 @@
 #include "RoomManager.hpp"
 #include "LoginRequestHandler.hpp"
 #include "MenuRequestHandler.hpp"
+#include "RoomMemberRequestHandler.hpp"
+#include "RoomAdminRequestHandler.hpp"
 #include "StatisticsManager.hpp"
 
 class RequestHandlerFactory
@@ -11,6 +13,9 @@ public:
 	RequestHandlerFactory();
 	LoginRequestHandler* createLoginRequestHandler();
 	MenuRequestHandler* createMenuRequestHandler(LoggedUser user);
+	RoomMemberRequestHandler* createRoomMemberHandler(LoggedUser user);
+	RoomAdminRequestHandler* createRoomAdminHandler(LoggedUser user);
+
 
 	LoginManager& getLoginManager();
 	RoomManager& getRoomManager();

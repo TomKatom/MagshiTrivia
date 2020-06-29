@@ -16,6 +16,15 @@ MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler(LoggedUser u
 	return new MenuRequestHandler(this, user);
 }
 
+RoomMemberRequestHandler* RequestHandlerFactory::createRoomMemberHandler(LoggedUser user) {
+	return new RoomMemberRequestHandler(this, user);
+}
+
+RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminHandler(LoggedUser user) {
+	return new RoomAdminRequestHandler(this, user);
+}
+
+
 LoginManager& RequestHandlerFactory::getLoginManager() {
 	return *this->m_loginManager;
 }
