@@ -155,7 +155,9 @@ enum ResponseStatus {
 	getRoomStateSuccess,
 	getRoomStateError,
 	leaveRoomSuccess,
-	leaveRoomError
+	leaveRoomError,
+	roomClosed,
+	gameStarted
 };
 
 enum RequestCodes {

@@ -32,26 +32,45 @@ RequestResult RoomMemberRequestHandler::getRoomState(RequestInfo requestInfo) {
 	GetRoomStateResponse response;
 	RequestResult requestRes;
 
-	try {
-		Room room = this->_factory->getRoomManager().getRooms()[this->m_loggedUser.getRoomId()];
-		response.answerTimeout = room.getTimePerQuestion();
-		response.hasGameBegun = room.getState();
-		response.maxPlayers = room.getMaxPlayers();
-		response.name = room.getName();
-		response.id = room.getID();
-		std::vector<std::string> players;
-		for (auto& user : room.getAllUsers()) {
-			players.push_back(user.getUsername());
+	if (this->_factory->getRoomManager().getRooms().find(this->m_loggedUser.getRoomId()) != this->_factory->getRoomManager().getRooms().end()) {
+		try {
+			Room room = this->_factory->getRoomManager().getRooms()[this->m_loggedUser.getRoomId()];
+			response.answerTimeout = room.getTimePerQuestion();
+			response.hasGameBegun = room.getState();
+			response.maxPlayers = room.getMaxPlayers();
+			response.name = room.getName();
+			response.id = room.getID();
+			std::vector<std::string> players;
+			for (auto& user : room.getAllUsers()) {
+				players.push_back(user.getUsername());
+			}
+			if (response.hasGameBegun) {
+				response.status = ResponseStatus::gameStarted;
+			}
+			else {
+				response.status = ResponseStatus::getRoomsSuccess;
+			}
+			response.players = players;
+			response.questionCount = room.getQuestionsCount();
+			requestRes.irequestHandler = this->_factory->createRoomMemberHandler(this->m_loggedUser);
 		}
-		response.players = players;
-		response.questionCount = room.getQuestionsCount();
-		requestRes.irequestHandler = this->_factory->createRoomAdminHandler(this->m_loggedUser);
+		catch (std::exception & e) {
+			response.status = ResponseStatus::getRoomStateError;
+			requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
+		}
 	}
-	catch (std::exception & e) {
-		response.status = ResponseStatus::closeRoomError;
+	else {
+		response.status = ResponseStatus::roomClosed;
+		response.answerTimeout = 0;
+		response.hasGameBegun = false;
+		response.questionCount = 0;
+		response.maxPlayers = 0;
+		response.name = "";
+		response.id = 0;
+		response.players = std::vector<std::string>();
+		this->m_loggedUser.setRoomId(-1);
 		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	}
-
 	requestRes.buffer = JsonResponsePacketSerializer::serializeResponse(response);
 	return requestRes;
 }
@@ -63,7 +82,8 @@ RequestResult RoomMemberRequestHandler::leaveRoom(RequestInfo requestInfo) {
 	try {
 		this->_factory->getRoomManager().getRooms()[this->m_loggedUser.getRoomId()].removeUser(this->m_loggedUser);
 		response.status = ResponseStatus::leaveRoomSuccess;
-		requestRes.irequestHandler = this->_factory->createRoomAdminHandler(this->m_loggedUser);
+		this->m_loggedUser.setRoomId(-1);
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	}
 	catch (std::exception & e) {
 		response.status = ResponseStatus::leaveRoomError;
