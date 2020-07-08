@@ -153,6 +153,66 @@ std::vector<unsigned char>  JsonResponsePacketSerializer::serializeResponse(Leav
 	return serializeStatusResponse(res.status);
 }
 
+std::vector<unsigned char>  JsonResponsePacketSerializer::serializeResponse(GetGameResultsResponse res) {
+	std::vector<unsigned char> buffer;
+	json j, temp;
+	j["status"] = res.status;
+
+	json resultsArray = json::array();
+
+
+	for (int i = 0; i < res.results.size(); i++) {
+		temp["username"] = res.results[i].username;
+		temp["correctAnswerCount"] = res.results[i].correctAnswerCount;
+		temp["wrongAnswerCount "] = res.results[i].wrongAnswerCount;
+		temp["averageAnswerTime "] = res.results[i].averageAnswerTime;
+	
+		resultsArray[i] = temp;
+	}
+
+	j["results"] = resultsArray;
+
+	for (auto& c : j.dump()) {
+		buffer.push_back(c);
+	}
+
+	JsonResponsePacketSerializer::insertInt2Vector(buffer, buffer.size());
+	buffer.insert(buffer.begin(), logoutResponseCode);
+	return buffer;
+}
+
+std::vector<unsigned char>  JsonResponsePacketSerializer::serializeResponse(SubmitAnswerResponse res) {
+	std::vector<unsigned char> buffer;
+	json j;
+	j["status"] = res.status;
+	j["correctAnswerId "] = res.correctAnswerId;
+
+	for (auto& c : j.dump()) {
+		buffer.push_back(c);
+	}
+
+	JsonResponsePacketSerializer::insertInt2Vector(buffer, buffer.size());
+	buffer.insert(buffer.begin(), logoutResponseCode);
+	return buffer;
+}
+
+std::vector<unsigned char>  JsonResponsePacketSerializer::serializeResponse(GetQuestionResponse res) {
+	std::vector<unsigned char> buffer;
+	json j;
+	j["status"] = res.status;
+	j["question "] = res.question;
+
+	// + answers : map<unsigned int, string>
+
+	for (auto& c : j.dump()) {
+		buffer.push_back(c);
+	}
+
+	JsonResponsePacketSerializer::insertInt2Vector(buffer, buffer.size());
+	buffer.insert(buffer.begin(), logoutResponseCode);
+	return buffer;
+}
+
 //Helper functions
 void JsonResponsePacketSerializer::insertInt2Vector(std::vector<unsigned char>& vector, int val) {
 	vector.insert(vector.begin(), val & 0xff);

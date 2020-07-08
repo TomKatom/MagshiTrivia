@@ -28,7 +28,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
     print("* sign up: (username: \"user1\",password: \"1234\", \"email:user1@gmail.com\" )")
     time.sleep(2)
-    x =  '''{"username" : "user1", "password" : "1234", "email" : "user1@gmail.com"}'''
+    x =  '''{"username" : "user8", "password" : "1234", "email" : "user1@gmail.com"}'''
     data = b = bytes([21,0x0,0x0,0x0,len(x)]) + x.encode()
     s.sendall(data)
     data = s.recv(1024)
@@ -36,7 +36,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
     print("* log in: (username: \"user1\", password: \"1234\")")
     time.sleep(2)
-    x =  '''{"username" : "user1", "password" : "1234"}'''
+    x =  '''{"username" : "user8", "password" : "1234"}'''
     data  =  b = bytes([20,0x0,0x0,0x0,len(x)]) + x.encode()
     s.sendall(data) 
     data = s.recv(1024)

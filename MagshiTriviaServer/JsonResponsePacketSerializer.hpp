@@ -25,6 +25,10 @@ public:
 	static std::vector<unsigned char>  serializeResponse(GetRoomStateResponse);
 	static std::vector<unsigned char>  serializeResponse(LeaveRoomResponse);
 
+	//V4
+	static std::vector<unsigned char>  serializeResponse(GetGameResultsResponse);
+	static std::vector<unsigned char>  serializeResponse(SubmitAnswerResponse);
+	static std::vector<unsigned char>  serializeResponse(GetQuestionResponse);
 
 private:
 	static void insertInt2Vector(std::vector<unsigned char>& vector, int val);

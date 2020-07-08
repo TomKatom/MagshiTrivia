@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <map>
 #include "Room.hpp"
 
 class IRequestHandler;
@@ -126,6 +127,30 @@ typedef struct LeaveRoomResponse {
 	unsigned int status;
 }LeaveRoomResponse;
 
+
+//V4
+typedef struct PlayerResults {
+	std::string username;
+	unsigned int correctAnswerCount;
+	unsigned int wrongAnswerCount;
+	unsigned int averageAnswerTime;
+}PlayerResults;
+
+typedef struct GetGameResultsResponse {
+	unsigned int status;
+	std::vector<PlayerResults> results;
+}GetGameResultsResponse;
+
+typedef struct SubmitAnswerResponse {
+	unsigned int status;
+	unsigned int correctAnswerId;
+}SubmitAnswerResponse;
+
+typedef struct GetQuestionResponse {
+	unsigned int status;
+	std::string question;
+	std::map<char, int> results;
+}GetQuestionResponse;
 
 
 
