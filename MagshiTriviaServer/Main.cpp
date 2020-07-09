@@ -9,6 +9,11 @@
 #include <mongocxx/instance.hpp>
 #include <iostream>
 
+#include <nlohmann/json.hpp>
+
+using namespace nlohmann;
+
+
 int main()
 {
 	mongocxx::instance instance{}; 
