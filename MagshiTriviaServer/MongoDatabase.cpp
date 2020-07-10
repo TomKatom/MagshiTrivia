@@ -55,11 +55,11 @@ bool MongoDatabase::doesUserExist(string username) {
 }
 
 
-std::list<Question> MongoDatabase::getQuestions(int x)
+std::vector<Question> MongoDatabase::getQuestions(int x)
 {
 	mongocxx::collection questions = this->_db["questions"];
 	mongocxx::cursor result = questions.find(document{} << "$sample" << document{} << "size" << x << finalize);
-	std::list<Question> questionList;
+	std::vector<Question> questionList;
 	return questionList;
 }
 float MongoDatabase::getAverageAnswerTime(std::string name)

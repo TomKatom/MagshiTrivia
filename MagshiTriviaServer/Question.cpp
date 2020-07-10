@@ -1,9 +1,9 @@
 #include "Question.hpp"
 
-Question::Question(std::string question, std::string correctAnswer, std::list<std::string> wrongAnswers) {
+Question::Question(std::string question, std::string correctAnswer, std::vector<std::string> possibleAnswers) {
 	this->question = question;
 	this->correctAnswer = correctAnswer;
-	this->wrongAnswers = wrongAnswers;
+	this->possibleAnswers = possibleAnswers;
 }
 std::string Question::getQuestion() {
 	return this->question;
@@ -11,6 +11,6 @@ std::string Question::getQuestion() {
 std::string Question::getCorrectAnswer() {
 	return this->correctAnswer;
 }
-std::list<std::string> Question::getWrongAnswers() {
-	return this->wrongAnswers;
+std::vector<std::string> Question::getPossibleAnswers() {
+	return this->possibleAnswers;
 }

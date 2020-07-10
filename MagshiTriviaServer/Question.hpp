@@ -1,14 +1,16 @@
+#pragma once
 #include <string>
-#include <list>
+#include <vector>
 
 class Question {
 public:
-	Question(std::string question, std::string correctAnswer, std::list<std::string> correctAnswers);
+	Question() = default;
+	Question(std::string question, std::string correctAnswer, std::vector<std::string> possibleAnswers);
 	std::string getQuestion();
 	std::string getCorrectAnswer();
-	std::list<std::string> getWrongAnswers();
+	std::vector<std::string> getPossibleAnswers();
 private:
 	std::string question;
 	std::string correctAnswer;
-	std::list<std::string> wrongAnswers;
+	std::vector<std::string> possibleAnswers;
 };
