@@ -234,3 +234,6 @@ std::vector<unsigned char> JsonResponsePacketSerializer::serializeStatusResponse
 	buffer.insert(buffer.begin(), logoutResponseCode);
 	return buffer;
 }
+std::vector<unsigned char>  JsonResponsePacketSerializer::serializeResponse(LeaveGameResponse res) {
+	return serializeStatusResponse(res.status);
+}
