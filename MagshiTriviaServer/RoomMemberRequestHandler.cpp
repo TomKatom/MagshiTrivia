@@ -40,12 +40,17 @@ RequestResult RoomMemberRequestHandler::getRoomState(RequestInfo requestInfo) {
 			response.maxPlayers = room.getMaxPlayers();
 			response.name = room.getName();
 			response.id = room.getID();
+			response.questionCount = room.getQuestionsCount();
 			std::vector<std::string> players;
 			for (auto& user : room.getAllUsers()) {
 				players.push_back(user.getUsername());
 			}
 			if (response.hasGameBegun) {
 				response.status = ResponseStatus::gameStarted;
+				this->_factory->getRoomManager().getRooms()[this->m_loggedUser.getRoomId()].setActive(true);
+				Room currRoom = this->_factory->getRoomManager().getRooms()[this->m_loggedUser.getRoomId()];
+				this->m_loggedUser.setCurrGame(this->_factory->getGameManager().findGame(this->m_loggedUser.getRoomId()));
+				requestRes.irequestHandler = this->_factory->createGameRequestHandler(this->m_loggedUser, *this->m_loggedUser.getCurrGame());
 			}
 			else {
 				response.status = ResponseStatus::getRoomsSuccess;

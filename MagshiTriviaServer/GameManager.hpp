@@ -10,6 +10,7 @@ private:
 	int currGameId;
 public:
 	GameManager(IDatabase* m_database);
-	Game createGame(Room room);
+	Game* createGame(Room room);
 	void deleteRoom(Game game);
+	Game* findGame(int roomId);
 };

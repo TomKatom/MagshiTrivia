@@ -44,7 +44,6 @@ RequestResult RoomAdminRequestHandler::closeRoom(RequestInfo requestInfo) {
 		response.status = ResponseStatus::closeRoomError;
 		requestRes.irequestHandler = this->_factory->createRoomAdminHandler(this->m_loggedUser);
 	}
-
 	requestRes.buffer = JsonResponsePacketSerializer::serializeResponse(response);
 	return requestRes;
 }
@@ -52,11 +51,12 @@ RequestResult RoomAdminRequestHandler::closeRoom(RequestInfo requestInfo) {
 RequestResult RoomAdminRequestHandler::startGame(RequestInfo requestInfo) {
 	StartGameResponse response;
 	RequestResult requestRes;
-
 	try {
 		this->_factory->getRoomManager().getRooms()[this->m_loggedUser.getRoomId()].setActive(true);
 		response.status = ResponseStatus::startGameSuccess;
-		requestRes.irequestHandler = this->_factory->createRoomAdminHandler(this->m_loggedUser);
+		Room currRoom = this->_factory->getRoomManager().getRooms()[this->m_loggedUser.getRoomId()];
+		this->m_loggedUser.setCurrGame(this->_factory->getGameManager().createGame(currRoom));
+		requestRes.irequestHandler = this->_factory->createGameRequestHandler(this->m_loggedUser, *this->m_loggedUser.getCurrGame());
 	}
 	catch (std::exception & e) {
 		response.status = ResponseStatus::startGameError;

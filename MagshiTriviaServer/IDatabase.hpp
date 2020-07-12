@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 #include "Question.hpp"
+#include "GameData.hpp"
+#include "LoggedUser.hpp"
 
 class IDatabase {
 public:
@@ -15,4 +17,6 @@ public:
 	virtual int getNumOfCorrectAnswers(std::string name) = 0;
 	virtual int getNumOfTotalAnswers(std::string name) = 0;
 	virtual int getNumOfPlayerGames(std::string name) = 0;
+
+	virtual void updateStatistics(std::pair<LoggedUser, GameData> user) = 0;
 };

@@ -2,13 +2,13 @@
 #include <algorithm>
 
 GameManager::GameManager(IDatabase* m_database) {
-	this->currGameId = 0;
+	this->currGameId = 1;
 	this->m_database = m_database;
 }
-Game GameManager::createGame(Room room) {
-	Game newGame(this->m_database->getQuestions(room.getQuestionsCount()), room, currGameId);
+Game* GameManager::createGame(Room room) {
+	Game* newGame = new Game(this->m_database->getQuestions(room.getQuestionsCount()), room, currGameId);
 	this->currGameId++;
-	this->games.push_back(newGame);
+	this->games.push_back(*newGame);
 	return newGame;
 }
 
@@ -19,4 +19,14 @@ void GameManager::deleteRoom(Game game) {
 	else {
 		throw std::string("Game doesn't exit.");
 	}
+}
+
+Game* GameManager::findGame(int roomId) {
+	Game* result = nullptr;
+	for (auto game : games) {
+		if (game.getRoom().getID() == roomId) {
+			result = new Game(game);
+		}
+	}
+	return result;
 }

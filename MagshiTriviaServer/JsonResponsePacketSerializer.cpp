@@ -200,10 +200,8 @@ std::vector<unsigned char>  JsonResponsePacketSerializer::serializeResponse(GetQ
 	std::vector<unsigned char> buffer;
 	json j;
 	j["status"] = res.status;
-	j["question "] = res.question;
-
-	// + answers : map<unsigned int, string>
-
+	j["question"] = res.question;
+	j["answers"] = res.answers;
 	for (auto& c : j.dump()) {
 		buffer.push_back(c);
 	}

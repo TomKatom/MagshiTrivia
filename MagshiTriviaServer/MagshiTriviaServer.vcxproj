@@ -143,6 +143,7 @@
     <ClCompile Include="Communicator.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="GameRequestHandler.cpp" />
     <ClCompile Include="IRequestHandler.cpp" />
     <ClCompile Include="JsonRequestPacketDeserializer.cpp" />
     <ClCompile Include="JsonResponsePacketSerializer.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="GameData.hpp" />
     <ClInclude Include="GameManager.hpp" />
+    <ClInclude Include="GameRequestHandler.hpp" />
     <ClInclude Include="IDatabase.hpp" />
     <ClInclude Include="IRequestHandler.hpp" />
     <ClInclude Include="JsonRequestPacketDeserializer.hpp" />

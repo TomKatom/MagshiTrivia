@@ -3,13 +3,14 @@
 #include <vector>
 #include <map>
 #include "Room.hpp"
+#include <ctime>
 
 class IRequestHandler;
 class Communicator;
 
 typedef struct RequestInfo {
 	unsigned char messageCode;
-	//time
+	std::time_t receivalTime;
 	std::vector<unsigned char> buffer;
 } RequestInfo;
 
@@ -129,6 +130,9 @@ typedef struct LeaveRoomResponse {
 
 
 //V4
+typedef struct LeaveGameResponse {
+	unsigned int status;
+} LeaveGameResponse;
 typedef struct PlayerResults {
 	std::string username;
 	unsigned int correctAnswerCount;
@@ -149,8 +153,12 @@ typedef struct SubmitAnswerResponse {
 typedef struct GetQuestionResponse {
 	unsigned int status;
 	std::string question;
-	std::map<char, int> results;
+	std::vector<std::string> answers;
 }GetQuestionResponse;
+
+typedef struct SubmitAnswerRequest {
+	unsigned answerId;
+};
 
 
 
@@ -182,7 +190,16 @@ enum ResponseStatus {
 	leaveRoomSuccess,
 	leaveRoomError,
 	roomClosed,
-	gameStarted
+	gameStarted,
+	leaveGameSuccess,
+	leaveGameError,
+	getQuestionSuccess,
+	getQuestionError,
+	submitAnswerSuccess,
+	submitAnswerError,
+	getGameResultSuccess,
+	getGameResultError,
+	gameHasNotEnded
 };
 
 enum RequestCodes {
@@ -197,6 +214,10 @@ enum RequestCodes {
 	closeRoomRequest,
 	startGameRequest,
 	getRoomStateRequest,
-	leaveRoomRequest
+	leaveRoomRequest,
+	leaveGameRequest,
+	getQuestionRequest,
+	submitAnswerRequest,
+	getGameResultRequest
 };
 

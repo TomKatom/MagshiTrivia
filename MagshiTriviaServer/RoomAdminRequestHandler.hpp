@@ -1,6 +1,6 @@
 #pragma once
 #include "IRequestHandler.hpp"
-	class RequestHandlerFactory;
+class RequestHandlerFactory;
 #include "LoggedUser.hpp"
 
 

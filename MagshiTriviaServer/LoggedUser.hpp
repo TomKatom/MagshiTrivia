@@ -6,11 +6,11 @@ class LoggedUser {
 public:
 	LoggedUser() = default;
 	LoggedUser(std::string username);
-	std::string getUsername();
-	int getRoomId();
+	std::string getUsername() const;
+	int getRoomId() const;
 	void setRoomId(int id);
-	Game getCurrGame();
-	void setCurrGame(Game game);
+	Game* getCurrGame();
+	void setCurrGame(Game* game);
 	bool operator<(const LoggedUser& other) const;
 
 private:

@@ -6,6 +6,9 @@
 #include <mongocxx/stdx.hpp>
 #include <mongocxx/uri.hpp>
 #include <mongocxx/instance.hpp>
+#include "LoggedUser.hpp"
+#include "GameData.hpp"
+#include <map>
 
 class MongoDatabase : public IDatabase {
 public:
@@ -19,6 +22,7 @@ public:
 	int getNumOfCorrectAnswers(std::string name) override;
 	int getNumOfTotalAnswers(std::string name) override;
 	int getNumOfPlayerGames(std::string name) override;
+	void updateStatistics(std::pair<LoggedUser, GameData> user) override;
 private:
 	mongocxx::database _db;
 	mongocxx::client* _client;

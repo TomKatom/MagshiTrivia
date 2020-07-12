@@ -11,3 +11,7 @@ UserStatistics StatisticsManager::getStatistics(std::string name) {
 	response.averageTimeForAnswer = this->m_database->getAverageAnswerTime(name);
 	return response;
 }
+
+void StatisticsManager::updateStatistics(std::pair<LoggedUser, GameData> user) {
+	this->m_database->updateStatistics(user);
+}
