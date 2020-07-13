@@ -82,6 +82,12 @@ RequestResult RoomAdminRequestHandler::getRoomState(RequestInfo requestInfo) {
 		for (auto& user : room.getAllUsers()) {
 			players.push_back(user.getUsername());
 		}
+		if (response.hasGameBegun) {
+			response.status = ResponseStatus::gameStarted;
+		}
+		else {
+			response.status = ResponseStatus::getRoomStateSuccess;
+		}
 		response.players = players;
 		response.questionCount = room.getQuestionsCount();
 		requestRes.irequestHandler = this->_factory->createRoomAdminHandler(this->m_loggedUser);

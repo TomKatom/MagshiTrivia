@@ -48,7 +48,7 @@ RequestResult RoomMemberRequestHandler::getRoomState(RequestInfo requestInfo) {
 				response.status = ResponseStatus::gameStarted;
 			}
 			else {
-				response.status = ResponseStatus::getRoomsSuccess;
+				response.status = ResponseStatus::getRoomStateSuccess;
 			}
 			response.players = players;
 			response.questionCount = room.getQuestionsCount();
