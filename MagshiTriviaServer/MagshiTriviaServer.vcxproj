@@ -163,6 +163,7 @@
     <ClCompile Include="StatisticsManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AlreadyLoggedInException.hpp" />
     <ClInclude Include="Communicator.hpp" />
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="GameData.hpp" />

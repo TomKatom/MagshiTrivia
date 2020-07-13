@@ -12,6 +12,10 @@ UserStatistics StatisticsManager::getStatistics(std::string name) {
 	return response;
 }
 
-void StatisticsManager::updateStatistics(std::pair<LoggedUser, GameData> user) {
-	this->m_database->updateStatistics(user);
+void StatisticsManager::updateStatistics(PlayerResults results, bool won) {
+	this->m_database->updateStatistics(results, won);
+}
+
+std::vector<LeaderboardEntry> StatisticsManager::getLeaderboard() {
+	return this->m_database->getLeaderboard();
 }

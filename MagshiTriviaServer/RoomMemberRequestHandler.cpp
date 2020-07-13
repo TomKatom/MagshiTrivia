@@ -1,7 +1,7 @@
 #include "RoomMemberRequestHandler.hpp"
 #include "RequestHandlerFactory.hpp"
 
-RoomMemberRequestHandler::RoomMemberRequestHandler(RequestHandlerFactory* factory, LoggedUser user) {
+RoomMemberRequestHandler::RoomMemberRequestHandler(RequestHandlerFactory* factory, LoggedUser* user) {  
 	this->_factory = factory;
 	this->m_loggedUser = user;
 }
@@ -32,9 +32,9 @@ RequestResult RoomMemberRequestHandler::getRoomState(RequestInfo requestInfo) {
 	GetRoomStateResponse response;
 	RequestResult requestRes;
 
-	if (this->_factory->getRoomManager().getRooms().find(this->m_loggedUser.getRoomId()) != this->_factory->getRoomManager().getRooms().end()) {
+	if (this->_factory->getRoomManager().getRooms().find(this->m_loggedUser->getRoomId()) != this->_factory->getRoomManager().getRooms().end()) {
 		try {
-			Room room = this->_factory->getRoomManager().getRooms()[this->m_loggedUser.getRoomId()];
+			Room room = *this->_factory->getRoomManager().getRooms()[this->m_loggedUser->getRoomId()];
 			response.answerTimeout = room.getTimePerQuestion();
 			response.hasGameBegun = room.getState();
 			response.maxPlayers = room.getMaxPlayers();
@@ -43,21 +43,20 @@ RequestResult RoomMemberRequestHandler::getRoomState(RequestInfo requestInfo) {
 			response.questionCount = room.getQuestionsCount();
 			std::vector<std::string> players;
 			for (auto& user : room.getAllUsers()) {
-				players.push_back(user.getUsername());
+				players.push_back(user->getUsername());
 			}
 			if (response.hasGameBegun) {
 				response.status = ResponseStatus::gameStarted;
-				this->_factory->getRoomManager().getRooms()[this->m_loggedUser.getRoomId()].setActive(true);
-				Room currRoom = this->_factory->getRoomManager().getRooms()[this->m_loggedUser.getRoomId()];
-				this->m_loggedUser.setCurrGame(this->_factory->getGameManager().findGame(this->m_loggedUser.getRoomId()));
-				requestRes.irequestHandler = this->_factory->createGameRequestHandler(this->m_loggedUser, *this->m_loggedUser.getCurrGame());
+				this->_factory->getRoomManager().getRooms()[this->m_loggedUser->getRoomId()]->setActive(true);
+				Room currRoom = *this->_factory->getRoomManager().getRooms()[this->m_loggedUser->getRoomId()];
+				requestRes.irequestHandler = this->_factory->createGameRequestHandler(this->m_loggedUser, this->_factory->getGameManager().findGame(this->m_loggedUser->getRoomId()));
 			}
 			else {
 				response.status = ResponseStatus::getRoomsSuccess;
+				response.players = players;
+				response.questionCount = room.getQuestionsCount();
+				requestRes.irequestHandler = this->_factory->createRoomMemberHandler(this->m_loggedUser);
 			}
-			response.players = players;
-			response.questionCount = room.getQuestionsCount();
-			requestRes.irequestHandler = this->_factory->createRoomMemberHandler(this->m_loggedUser);
 		}
 		catch (std::exception & e) {
 			response.status = ResponseStatus::getRoomStateError;
@@ -73,7 +72,7 @@ RequestResult RoomMemberRequestHandler::getRoomState(RequestInfo requestInfo) {
 		response.name = "";
 		response.id = 0;
 		response.players = std::vector<std::string>();
-		this->m_loggedUser.setRoomId(-1);
+		this->m_loggedUser->setRoomId(-1);
 		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	}
 	requestRes.buffer = JsonResponsePacketSerializer::serializeResponse(response);
@@ -85,9 +84,9 @@ RequestResult RoomMemberRequestHandler::leaveRoom(RequestInfo requestInfo) {
 	RequestResult requestRes;
 
 	try {
-		this->_factory->getRoomManager().getRooms()[this->m_loggedUser.getRoomId()].removeUser(this->m_loggedUser);
+		this->_factory->getRoomManager().getRooms()[this->m_loggedUser->getRoomId()]->removeUser(this->m_loggedUser);
 		response.status = ResponseStatus::leaveRoomSuccess;
-		this->m_loggedUser.setRoomId(-1);
+		this->m_loggedUser->setRoomId(-1);
 		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	}
 	catch (std::exception & e) {
@@ -98,3 +97,4 @@ RequestResult RoomMemberRequestHandler::leaveRoom(RequestInfo requestInfo) {
 	requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	return requestRes;
 }
+

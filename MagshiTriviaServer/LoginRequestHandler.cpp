@@ -2,6 +2,8 @@
 #include <iostream>
 #include "JsonRequestPacketDeserializer.hpp"
 #include "RequestHandlerFactory.hpp"
+#include "AlreadyLoggedInException.hpp"
+
 
 LoginRequestHandler::LoginRequestHandler(RequestHandlerFactory* factory) {
 	this->_factory = factory;
@@ -31,7 +33,11 @@ RequestResult LoginRequestHandler::login(RequestInfo requestInfo) {
 		LoginRequest request = JsonRequestPacketDeserializer::deserializeLoginRequest(requestInfo.buffer);
 		LoggedUser* user = this->_factory->getLoginManager().login(request.userName, request.password);
 		response.status = ResponseStatus::loginSuccess;
-		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(*user);
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(user);
+	}
+	catch (AlreadyLoggedInException & e) {
+		response.status = ResponseStatus::alreadyLoggedIn;
+		requestRes.irequestHandler = this->_factory->createLoginRequestHandler();
 	}
 	catch (std::exception & e) {
 		response.status = ResponseStatus::loginError;

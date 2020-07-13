@@ -13,7 +13,7 @@ public:
 	void logout(std::string username);
 
 private: 
-	std::vector<LoggedUser> m_loggedUsers;
+	std::vector<LoggedUser*> m_loggedUsers;
 	IDatabase* m_database;
 };
 

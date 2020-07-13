@@ -17,12 +17,13 @@ public:
 	bool doesPasswordMatch(std::string username, std::string password) override;
 	void addNewUser(std::string username, std::string password, std::string email) override;
 
-	std::vector<Question> getQuestions(int x) override;
+	std::vector<Question*>& getQuestions(int x) override;
 	float getAverageAnswerTime(std::string name) override;
 	int getNumOfCorrectAnswers(std::string name) override;
 	int getNumOfTotalAnswers(std::string name) override;
 	int getNumOfPlayerGames(std::string name) override;
-	void updateStatistics(std::pair<LoggedUser, GameData> user) override;
+	void updateStatistics(PlayerResults results, bool won) override;
+	std::vector<LeaderboardEntry> getLeaderboard() override;
 private:
 	mongocxx::database _db;
 	mongocxx::client* _client;

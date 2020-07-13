@@ -18,6 +18,7 @@ public:
 	static std::vector<unsigned char>  serializeResponse(JoinRoomResponse); 
 	static std::vector<unsigned char>  serializeResponse(CreateRoomResponse);
 	static std::vector<unsigned char>  serializeResponse(GetStatisticsResponse);
+	static std::vector<unsigned char>  serializeResponse(GetLeaderboardResponse);
 
 	//V3
 	static std::vector<unsigned char>  serializeResponse(CloseRoomResponse);

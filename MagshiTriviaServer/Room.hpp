@@ -7,10 +7,10 @@ class Room {
 public:
 	Room() = default;
 	Room(int id, std::string name, int maxPlayers, unsigned int timePerQuestion, int questionCount);
-	void addUser(LoggedUser user);
-	void removeUser(LoggedUser user);
+	void addUser(LoggedUser* user);
+	void removeUser(LoggedUser* user);
 	int getID();
-	std::list<LoggedUser> getAllUsers() const;
+	std::list<LoggedUser*> getAllUsers() const;
 	std::string getName();
 	bool getState();
 	void setActive(bool active);
@@ -25,5 +25,5 @@ private:
 	unsigned int _timePerQuestion;
 	bool _isActive;
 	int _questionsCount;
-	std::vector<LoggedUser> m_users;
+	std::vector<LoggedUser*> m_users;
 };

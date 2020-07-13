@@ -7,12 +7,12 @@ class RoomMemberRequestHandler :
 	public IRequestHandler
 {
 public:
-	RoomMemberRequestHandler(RequestHandlerFactory* factory, LoggedUser user);
+	RoomMemberRequestHandler(RequestHandlerFactory* factory, LoggedUser* user);
 	bool isRequestValid(RequestInfo requestInfo);
 	RequestResult handleRequest(RequestInfo requestInfo);
 
 private:
-	LoggedUser m_loggedUser;
+	LoggedUser* m_loggedUser;
 	RequestHandlerFactory* _factory;
 
 	RequestResult getRoomState(RequestInfo requestInfo);	

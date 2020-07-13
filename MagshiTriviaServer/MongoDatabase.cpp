@@ -42,7 +42,7 @@ void MongoDatabase::addNewUser(string name, string password, string email) {
 		<< "correctAnswerCount" << 0
 		<< "answerCount" << 0
 		<< "wrongAnswerCount" << 0
-		<< "averageTimeForAnswer" << 0
+		<< "averageTimeForAnswer" << 0.0
 		<< "wins" << 0
 		<< bsoncxx::builder::stream::finalize;
 	auto result = users.insert_one(doc_value.view());
@@ -59,11 +59,11 @@ bool MongoDatabase::doesUserExist(string username) {
 }
 
 
-std::vector<Question> MongoDatabase::getQuestions(int x)
+std::vector<Question*>& MongoDatabase::getQuestions(int x)
 {
 	mongocxx::collection questions = this->_db["questions"];
 	mongocxx::cursor result = questions.aggregate(mongocxx::pipeline().sample(x));
-	std::vector<Question>* questionList = new std::vector<Question>();
+	std::vector<Question*>* questionList = new std::vector<Question*>();
 	auto rng = std::default_random_engine{};
 	for (auto question : result) {
 		json j = json::parse(bsoncxx::to_json(question));
@@ -72,7 +72,7 @@ std::vector<Question> MongoDatabase::getQuestions(int x)
 		std::shuffle(possibleAnswers.begin(), possibleAnswers.end(), rng);
 		std::vector<string>* newAnswers = new std::vector<string>(possibleAnswers);
 		Question* temp = new Question(j["question"], j["correct_answer"], *newAnswers);
-		questionList->push_back(*temp);
+		questionList->push_back(temp);
 	}
 	return *questionList;
 }
@@ -105,15 +105,39 @@ int MongoDatabase::getNumOfPlayerGames(std::string name)
 	return j["gameCount"];
 }
 
-void MongoDatabase::updateStatistics(std::pair<LoggedUser, GameData> user) {
-	int newAverageTimeForAnswer = user.second.averageAnswerTime + this->getAverageAnswerTime(user.first.getUsername());
-	int newNumOfCorrectAnswers = user.second.correctQuestionCount + this->getNumOfCorrectAnswers(user.first.getUsername());
-	int newNumOfTotalAnswers = user.second.correctQuestionCount + user.second.wrongAnswerCount + this->getNumOfTotalAnswers(user.first.getUsername());
-	int newNumOfPlayerGames = this->getNumOfPlayerGames(user.first.getUsername()) + 1;
+void MongoDatabase::updateStatistics(PlayerResults results, bool won) {
+	double newAverageTimeForAnswer = (results.averageAnswerTime + this->getAverageAnswerTime(results.username) / 2);
+	int newNumOfCorrectAnswers = results.correctAnswerCount + this->getNumOfCorrectAnswers(results.username);
+	int newNumOfTotalAnswers = results.correctAnswerCount + results.wrongAnswerCount + this->getNumOfTotalAnswers(results.username);
+	int newNumOfPlayerGames = this->getNumOfPlayerGames(results.username) + 1;
 	mongocxx::collection users = this->_db["users"];
-	users.update_one(document{} << "username" << user.first.getUsername() << finalize, document{} << "$set" << open_document
-	<< "averageTimeForAnswer" << newAverageTimeForAnswer
-	<< "correctAnswerCount" << newNumOfCorrectAnswers
-	<< "answerCount" << newNumOfTotalAnswers
-	<< "gameCount" << newNumOfPlayerGames << close_document << finalize);
+	if (!won) {
+		users.update_one(document{} << "username" << results.username << finalize, document{} << "$set" << open_document
+		<< "averageTimeForAnswer" << newAverageTimeForAnswer
+		<< "correctAnswerCount" << newNumOfCorrectAnswers
+		<< "answerCount" << newNumOfTotalAnswers
+		<< "gameCount" << newNumOfPlayerGames << close_document << finalize);
+	}
+	else {
+		int currWins = json::parse(bsoncxx::to_json(users.find_one(document{} << "username" << results.username << finalize)->view()))["wins"];
+		users.update_one(document{} << "username" << results.username << finalize, document{} << "$set" << open_document
+		<< "averageTimeForAnswer" << newAverageTimeForAnswer
+		<< "correctAnswerCount" << newNumOfCorrectAnswers
+		<< "answerCount" << newNumOfTotalAnswers
+		 << "wins"  << currWins+1
+		<< "gameCount" << newNumOfPlayerGames 
+		<< close_document << finalize);
+
+	}
+}
+
+std::vector<LeaderboardEntry> MongoDatabase::getLeaderboard() {
+	std::vector<LeaderboardEntry>* players = new std::vector<LeaderboardEntry>();
+	mongocxx::cursor results = this->_db["users"].find(document{} << finalize);
+	for (auto user : results) {
+		json userData = json::parse(bsoncxx::to_json(user));
+		players->push_back(LeaderboardEntry{userData["username"], userData["gameCount"], userData["wins"], (unsigned int)userData["gameCount"] - (unsigned int)userData["wins"]});
+	}
+	std::sort(players->begin(), players->end(), std::greater<LeaderboardEntry>());
+	return *players;
 }

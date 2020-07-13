@@ -11,8 +11,8 @@ Room::Room(int id, std::string name, int maxPlayers, unsigned int timePerQuestio
 	this->_isActive = false;
 }
 
-void Room::addUser(LoggedUser user) {
-	if (std::find_if(this->m_users.begin(), this->m_users.end(), [&](auto username) {return user.getUsername() == username.getUsername(); }) == this->m_users.end()) {
+void Room::addUser(LoggedUser* user) {
+	if (std::find_if(this->m_users.begin(), this->m_users.end(), [&](auto username) {return user->getUsername() == username->getUsername(); }) == this->m_users.end()) {
 		this->m_users.push_back(user);
 	}
 	else {
@@ -21,12 +21,12 @@ void Room::addUser(LoggedUser user) {
 }
 
 
-void Room::removeUser(LoggedUser user) {
-	this->m_users.erase(std::remove_if(this->m_users.begin(), this->m_users.end(), [&](auto username) {return user.getUsername() == username.getUsername(); }));
+void Room::removeUser(LoggedUser* user) {
+	this->m_users.erase(std::remove_if(this->m_users.begin(), this->m_users.end(), [&](auto username) {return user->getUsername() == username->getUsername(); }));
 }
 
-std::list<LoggedUser> Room::getAllUsers() const {
-	std::list<LoggedUser> users;
+std::list<LoggedUser*> Room::getAllUsers() const {
+	std::list<LoggedUser*> users;
 	for (auto user : this->m_users) {
 		users.push_back(user);
 	}

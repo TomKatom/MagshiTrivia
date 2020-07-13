@@ -14,10 +14,10 @@ class RequestHandlerFactory
 public:
 	RequestHandlerFactory();
 	LoginRequestHandler* createLoginRequestHandler();
-	MenuRequestHandler* createMenuRequestHandler(LoggedUser user);
-	RoomMemberRequestHandler* createRoomMemberHandler(LoggedUser user);
-	RoomAdminRequestHandler* createRoomAdminHandler(LoggedUser user);
-	GameRequestHandler* createGameRequestHandler(LoggedUser user, Game game);
+	MenuRequestHandler* createMenuRequestHandler(LoggedUser* user);
+	RoomMemberRequestHandler* createRoomMemberHandler(LoggedUser* user);
+	RoomAdminRequestHandler* createRoomAdminHandler(LoggedUser* user);
+	GameRequestHandler* createGameRequestHandler(LoggedUser* user, Game* game);
 
 
 	LoginManager& getLoginManager();

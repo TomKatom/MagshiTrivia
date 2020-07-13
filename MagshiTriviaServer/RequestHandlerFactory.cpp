@@ -14,19 +14,19 @@ LoginRequestHandler* RequestHandlerFactory::createLoginRequestHandler() {
 	return new LoginRequestHandler(this);
 }
 
-MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler(LoggedUser user) {
+MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler(LoggedUser* user) {
 	return new MenuRequestHandler(this, user);
 }
 
-RoomMemberRequestHandler* RequestHandlerFactory::createRoomMemberHandler(LoggedUser user) {
+RoomMemberRequestHandler* RequestHandlerFactory::createRoomMemberHandler(LoggedUser* user) {
 	return new RoomMemberRequestHandler(this, user);
 }
 
-RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminHandler(LoggedUser user) {
+RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminHandler(LoggedUser* user) {
 	return new RoomAdminRequestHandler(this, user);
 }
 
-GameRequestHandler* RequestHandlerFactory::createGameRequestHandler(LoggedUser user, Game game) {
+GameRequestHandler* RequestHandlerFactory::createGameRequestHandler(LoggedUser* user, Game* game) {
 	return new GameRequestHandler(this, user, game);
 }
 

@@ -149,5 +149,8 @@
     <ClInclude Include="GameRequestHandler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AlreadyLoggedInException.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
