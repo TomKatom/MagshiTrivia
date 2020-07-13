@@ -1,7 +1,7 @@
 #include "Communicator.hpp"
 #include <thread>
 
-#define MAX_SIZE 1024
+#define MAX_SIZE 8192
 
 void Communicator::startHandleRequests() {
 	std::thread(&Communicator::bindAndListen, this).detach();
@@ -49,9 +49,12 @@ void Communicator::handleNewClient(sf::TcpSocket* client) {
 
 	char data[MAX_SIZE];
 	std::size_t received;
-	std::vector<unsigned char> buffer;
 
 	while (true) {
+		for (int i = 0; i < MAX_SIZE; i++) {
+			data[i] = 0;
+		}
+		received = 0;
 		if (client->receive(data, MAX_SIZE, received) != sf::Socket::Done)	{
 			break;
 		}

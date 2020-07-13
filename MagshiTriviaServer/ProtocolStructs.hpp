@@ -3,13 +3,15 @@
 #include <vector>
 #include <map>
 #include "Room.hpp"
+#include <ctime>
+#include <cmath>
 
 class IRequestHandler;
 class Communicator;
 
 typedef struct RequestInfo {
 	unsigned char messageCode;
-	//time
+	std::time_t receivalTime;
 	std::vector<unsigned char> buffer;
 } RequestInfo;
 
@@ -83,6 +85,19 @@ typedef struct GetStatisticsResponse {
 	UserStatistics userStatistics;
 }GetStatisticsResponse;
 
+typedef struct LeaderboardEntry {
+	std::string username;
+	unsigned int numOfGames;
+	unsigned int totalWins;
+	unsigned int totalLosses;
+	bool operator>(const LeaderboardEntry& other) const { double thisWinrate = (double)this->totalWins / (double)this->totalLosses; double otherWinrate = (double)other.totalWins / (double)other.totalLosses; return thisWinrate > otherWinrate; }
+}LeaderboardEntry;
+
+typedef struct GetLeaderboardResponse {
+	unsigned int status;
+	std::vector<LeaderboardEntry> players;
+}GetLeaderboardResponse;
+
 
 typedef struct LogoutRequest {
 	std::string username;
@@ -129,11 +144,16 @@ typedef struct LeaveRoomResponse {
 
 
 //V4
+typedef struct LeaveGameResponse {
+	unsigned int status;
+} LeaveGameResponse;
 typedef struct PlayerResults {
 	std::string username;
 	unsigned int correctAnswerCount;
 	unsigned int wrongAnswerCount;
-	unsigned int averageAnswerTime;
+	long double averageAnswerTime;
+	bool operator<(const PlayerResults& other) const { return (double)this->correctAnswerCount / this->averageAnswerTime < (double)other.correctAnswerCount / other.averageAnswerTime; }
+	bool operator>(const PlayerResults& other) const { return (double)this->correctAnswerCount / this->averageAnswerTime > (double)other.correctAnswerCount / other.averageAnswerTime; }
 }PlayerResults;
 
 typedef struct GetGameResultsResponse {
@@ -149,8 +169,12 @@ typedef struct SubmitAnswerResponse {
 typedef struct GetQuestionResponse {
 	unsigned int status;
 	std::string question;
-	std::map<char, int> results;
+	std::vector<std::string> answers;
 }GetQuestionResponse;
+
+typedef struct SubmitAnswerRequest {
+	unsigned answerId;
+};
 
 
 
@@ -163,6 +187,7 @@ enum ResponseCodes {
 enum ResponseStatus {
 	loginSuccess = 0,
 	loginError,
+	alreadyLoggedIn,
 	signUpSuccess,
 	signUpError,
 	logoutSuccess,
@@ -182,7 +207,16 @@ enum ResponseStatus {
 	leaveRoomSuccess,
 	leaveRoomError,
 	roomClosed,
-	gameStarted
+	gameStarted,
+	leaveGameSuccess,
+	leaveGameError,
+	getQuestionSuccess,
+	getQuestionError,
+	submitAnswerSuccess,
+	submitAnswerError,
+	getGameResultSuccess,
+	getGameResultError,
+	gameHasNotEnded
 };
 
 enum RequestCodes {
@@ -193,10 +227,15 @@ enum RequestCodes {
 	getPlayersInRoomRequest,
 	joinRoomRequest,
 	getStatisticsRequest,
+	getLeaderboardRequest,
 	logoutRequest,
 	closeRoomRequest,
 	startGameRequest,
 	getRoomStateRequest,
-	leaveRoomRequest
+	leaveRoomRequest,
+	leaveGameRequest,
+	getQuestionRequest,
+	submitAnswerRequest,
+	getGameResultRequest
 };
 

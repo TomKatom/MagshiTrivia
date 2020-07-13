@@ -1,5 +1,6 @@
 #include "JsonRequestPacketDeserializer.hpp"
 #include <algorithm>
+#include <chrono>
 
 
 
@@ -17,6 +18,7 @@ RequestInfo JsonRequestPacketDeserializer::getRequestInfo(std::vector< unsigned 
 	RequestInfo requestInfo;
 	requestInfo.messageCode = buffer[0];
 	requestInfo.buffer = buffer;
+	requestInfo.receivalTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 	return requestInfo;
 }
 
@@ -74,4 +76,10 @@ LogoutRequest JsonRequestPacketDeserializer::deserializeLogoutRequest(std::vecto
 	LogoutRequest logoutRequest;
 	logoutRequest.username = j["name"];
 	return logoutRequest;
+}
+
+SubmitAnswerRequest JsonRequestPacketDeserializer::deserializeSubmitAnswerRequest(std::vector<unsigned char> buffer) {
+	json j = JsonRequestPacketDeserializer::getJsonFromBuffer(buffer);
+	SubmitAnswerRequest request = { j["answerId"] };
+	return request;
 }

@@ -18,7 +18,9 @@ public:
 	static CreateRoomRequest deserializeCreateRoomRequest(std::vector< unsigned char > buffer);
 
 	//V3
-
+	
+	//V4
+	static SubmitAnswerRequest deserializeSubmitAnswerRequest(std::vector<unsigned char> buffer);
 
 
 private:

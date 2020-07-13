@@ -2,7 +2,7 @@
 #include "RequestHandlerFactory.hpp"
 
 
-RoomAdminRequestHandler::RoomAdminRequestHandler(RequestHandlerFactory* factory, LoggedUser user) {
+RoomAdminRequestHandler::RoomAdminRequestHandler(RequestHandlerFactory* factory, LoggedUser* user)  {
 	this->_factory = factory;
 	this->m_loggedUser = user;
 }
@@ -37,14 +37,13 @@ RequestResult RoomAdminRequestHandler::closeRoom(RequestInfo requestInfo) {
 	RequestResult requestRes;
 
 	try {
-		this->_factory->getRoomManager().deleteRoom(this->m_loggedUser.getRoomId());
+		this->_factory->getRoomManager().deleteRoom(this->m_loggedUser->getRoomId());
 		response.status = ResponseStatus::closeRoomSuccess;
 		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	} catch (std::exception & e) {
 		response.status = ResponseStatus::closeRoomError;
 		requestRes.irequestHandler = this->_factory->createRoomAdminHandler(this->m_loggedUser);
 	}
-
 	requestRes.buffer = JsonResponsePacketSerializer::serializeResponse(response);
 	return requestRes;
 }
@@ -52,11 +51,11 @@ RequestResult RoomAdminRequestHandler::closeRoom(RequestInfo requestInfo) {
 RequestResult RoomAdminRequestHandler::startGame(RequestInfo requestInfo) {
 	StartGameResponse response;
 	RequestResult requestRes;
-
 	try {
-		this->_factory->getRoomManager().getRooms()[this->m_loggedUser.getRoomId()].setActive(true);
+		this->_factory->getRoomManager().getRooms()[this->m_loggedUser->getRoomId()]->setActive(true);
 		response.status = ResponseStatus::startGameSuccess;
-		requestRes.irequestHandler = this->_factory->createRoomAdminHandler(this->m_loggedUser);
+		Room* currRoom = this->_factory->getRoomManager().getRooms()[this->m_loggedUser->getRoomId()];
+		requestRes.irequestHandler = this->_factory->createGameRequestHandler(this->m_loggedUser, this->_factory->getGameManager().createGame(currRoom));
 	}
 	catch (std::exception & e) {
 		response.status = ResponseStatus::startGameError;
@@ -72,7 +71,7 @@ RequestResult RoomAdminRequestHandler::getRoomState(RequestInfo requestInfo) {
 	RequestResult requestRes;
 
 	try {
-		Room room = this->_factory->getRoomManager().getRooms()[this->m_loggedUser.getRoomId()];
+		Room room = *this->_factory->getRoomManager().getRooms()[this->m_loggedUser->getRoomId()];
 		response.answerTimeout = room.getTimePerQuestion();
 		response.hasGameBegun = room.getState();
 		response.maxPlayers = room.getMaxPlayers();
@@ -80,7 +79,7 @@ RequestResult RoomAdminRequestHandler::getRoomState(RequestInfo requestInfo) {
 		response.id = room.getID();
 		std::vector<std::string> players;
 		for (auto& user : room.getAllUsers()) {
-			players.push_back(user.getUsername());
+			players.push_back(user->getUsername());
 		}
 		if (response.hasGameBegun) {
 			response.status = ResponseStatus::gameStarted;

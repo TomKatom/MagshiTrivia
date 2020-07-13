@@ -164,8 +164,8 @@ std::vector<unsigned char>  JsonResponsePacketSerializer::serializeResponse(GetG
 	for (int i = 0; i < res.results.size(); i++) {
 		temp["username"] = res.results[i].username;
 		temp["correctAnswerCount"] = res.results[i].correctAnswerCount;
-		temp["wrongAnswerCount "] = res.results[i].wrongAnswerCount;
-		temp["averageAnswerTime "] = res.results[i].averageAnswerTime;
+		temp["wrongAnswerCount"] = res.results[i].wrongAnswerCount;
+		temp["averageAnswerTime"] = res.results[i].averageAnswerTime;
 	
 		resultsArray[i] = temp;
 	}
@@ -200,10 +200,8 @@ std::vector<unsigned char>  JsonResponsePacketSerializer::serializeResponse(GetQ
 	std::vector<unsigned char> buffer;
 	json j;
 	j["status"] = res.status;
-	j["question "] = res.question;
-
-	// + answers : map<unsigned int, string>
-
+	j["question"] = res.question;
+	j["answers"] = res.answers;
 	for (auto& c : j.dump()) {
 		buffer.push_back(c);
 	}
@@ -225,6 +223,38 @@ std::vector<unsigned char> JsonResponsePacketSerializer::serializeStatusResponse
 	std::vector<unsigned char> buffer;
 	json j;
 	j["status"] = status;
+
+	for (auto& c : j.dump()) {
+		buffer.push_back(c);
+	}
+
+	JsonResponsePacketSerializer::insertInt2Vector(buffer, buffer.size());
+	buffer.insert(buffer.begin(), logoutResponseCode);
+	return buffer;
+}
+std::vector<unsigned char>  JsonResponsePacketSerializer::serializeResponse(LeaveGameResponse res) {
+	return serializeStatusResponse(res.status);
+}
+
+std::vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetLeaderboardResponse res) {
+
+	std::vector<unsigned char> buffer;
+	json j, temp;
+	j["status"] = res.status;
+
+	json playersArray = json::array();
+
+
+	for (int i = 0; i < res.players.size(); i++) {
+		temp["username"] = res.players[i].username;
+		temp["totalWins"] = res.players[i].totalWins;
+		temp["totalLosses"] = res.players[i].totalLosses;
+		temp["numOfGames"] = res.players[i].numOfGames;
+	
+		playersArray[i] = temp;
+	}
+
+	j["players"] = playersArray;
 
 	for (auto& c : j.dump()) {
 		buffer.push_back(c);
