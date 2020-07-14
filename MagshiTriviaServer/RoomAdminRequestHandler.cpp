@@ -38,6 +38,7 @@ RequestResult RoomAdminRequestHandler::closeRoom(RequestInfo requestInfo) {
 
 	try {
 		this->_factory->getRoomManager().deleteRoom(this->m_loggedUser->getRoomId());
+		delete this->_factory->getGameManager().findGame(this->m_loggedUser->getRoomId());
 		response.status = ResponseStatus::closeRoomSuccess;
 		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	} catch (std::exception & e) {

@@ -72,7 +72,7 @@ void Communicator::handleNewClient(sf::TcpSocket* client) {
 			for (int i = 0; i < buffer.size(); i++) {
 				data[i] = buffer[i];
 			}
-			client->send(data, buffer.size() ); //Send error msg to client
+			client->send(data, buffer.size() ); //Send msg to client
 		}
 		else {
 			ErrorResponse errorResponse;
