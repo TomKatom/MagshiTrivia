@@ -15,6 +15,7 @@ Game* GameManager::createGame(Room* room) {
 void GameManager::deleteRoom(Game* game) {
 	if(std::find(this->games.begin(), this->games.end(), game) != this->games.end()) {
 		this->games.erase(std::remove(this->games.begin(), this->games.end(), game), this->games.end());
+		delete game;
 	}
 	else {
 		throw std::string("Game doesn't exit.");

@@ -41,6 +41,7 @@ RequestResult GameRequestHandler::leaveGame(RequestInfo requestInfo) {
 		this->m_game->getPlayers()[this->m_user]->wrongAnswerCount = this->m_game->getQuestions().size() - this->m_game->getPlayers()[this->m_user]->correctQuestionCount;
 		this->m_game->getPlayers()[this->m_user]->averageAnswerTime = 100;
 		this->m_factory->getRoomManager().getRooms()[this->m_user->getRoomId()]->removeUser(this->m_user);
+		this->m_user->setLeftGame(true);
 		res.status = ResponseStatus::leaveGameSuccess;
 		requestRes.irequestHandler = this->m_factory->createMenuRequestHandler(this->m_user);
 	}
@@ -85,6 +86,12 @@ RequestResult GameRequestHandler::getGameResults(RequestInfo requestInfo) {
 			res.results = this->m_game->getResults();
 			res.status = ResponseStatus::getGameResultSuccess;
 			requestRes.irequestHandler = this->m_factory->createMenuRequestHandler(this->m_user);
+			if (this->m_game->getPlayers().size() == 0) {
+				this->m_factory->getGameManager().deleteRoom(this->m_game);
+			}
+			else {
+				this->m_game->getPlayers().erase(this->m_user);
+			}
 		}
 	}
 	catch (const std::exception& e) {
@@ -126,8 +133,12 @@ RequestResult GameRequestHandler::submitAnswer(RequestInfo requestInfo) {
 			for (int i = 1; i < this->m_game->getResults().size(); i++) {
 					this->m_factory->getStatisticManager().updateStatistics(this->m_game->getResults()[i], false);
 			}
-			this->m_game->getPlayers().clear();
 			this->m_factory->getRoomManager().deleteRoom(this->m_user->getRoomId());
+			for (auto player : this->m_game->getPlayers()) {
+				if (player.first->getLeftGame()) {
+					this->m_game->getPlayers().erase(player.first);
+				}
+			}
 		}
 		res.correctAnswerId = i;
 		res.status = ResponseStatus::submitAnswerSuccess;
