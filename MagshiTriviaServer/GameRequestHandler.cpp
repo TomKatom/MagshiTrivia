@@ -134,10 +134,14 @@ RequestResult GameRequestHandler::submitAnswer(RequestInfo requestInfo) {
 					this->m_factory->getStatisticManager().updateStatistics(this->m_game->getResults()[i], false);
 			}
 			this->m_factory->getRoomManager().deleteRoom(this->m_user->getRoomId());
+			std::vector<LoggedUser*> usersThatLeft;
 			for (auto player : this->m_game->getPlayers()) {
 				if (player.first->getLeftGame()) {
-					this->m_game->getPlayers().erase(player.first);
+					usersThatLeft.push_back(player.first);
 				}
+			}
+			for (auto player : usersThatLeft) {
+				this->m_game->getPlayers().erase(player);
 			}
 		}
 		res.correctAnswerId = i;
