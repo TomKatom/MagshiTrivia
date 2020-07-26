@@ -35,6 +35,9 @@ RequestResult MenuRequestHandler::handleRequest(RequestInfo requestInfo) {
 		case RequestCodes::logoutRequest:
 			result = this->signout(requestInfo);
 			break;
+		case RequestCodes::getLastUser:
+			result = this->updateLastUser(requestInfo);
+			break;
 	}
 	return result;
 }
@@ -170,6 +173,21 @@ RequestResult MenuRequestHandler::getLeaderboard(RequestInfo requestInfo) {
 	}
 	catch (std::exception & e) {
 		response.status = ResponseStatus::loginError;
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
+	}
+	requestRes.buffer = JsonResponsePacketSerializer::serializeResponse(response);
+	return requestRes;
+}
+
+
+RequestResult MenuRequestHandler::updateLastUser(RequestInfo requestInfo) {
+	GetLastUserResponse response;
+	RequestResult requestRes;
+	try {
+		response.username = this->_factory->getLoginManager().getLastUser();
+		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
+	}
+	catch (std::exception & e) {
 		requestRes.irequestHandler = this->_factory->createMenuRequestHandler(this->m_loggedUser);
 	}
 	requestRes.buffer = JsonResponsePacketSerializer::serializeResponse(response);

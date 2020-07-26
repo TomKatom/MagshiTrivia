@@ -21,4 +21,5 @@ private:
 	RequestResult getLeaderboard(RequestInfo);
 	RequestResult joinRoom(RequestInfo);
 	RequestResult createRoom(RequestInfo);
+	RequestResult updateLastUser(RequestInfo);
 };

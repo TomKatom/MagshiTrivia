@@ -4,6 +4,7 @@
 
 LoginManager::LoginManager(IDatabase* db) {
 	this->m_database = db;
+	this->lastUser = "No One Logged In Yet.";
 }
 LoginManager::~LoginManager() {
 	delete this->m_database;
@@ -15,6 +16,7 @@ LoggedUser* LoginManager::login(std::string username, std::string password) {
 		if (this->m_database->doesPasswordMatch(username, password)) { 
 			user = new LoggedUser(username);
 			this->m_loggedUsers.push_back(user); 
+			this->lastUser = username;
 			return user;
 		}
 		else {
@@ -38,4 +40,8 @@ void LoginManager::signup(std::string username, std::string password, std::strin
 
 void LoginManager::logout(std::string username) {
 	this->m_loggedUsers.erase(std::remove_if(this->m_loggedUsers.begin(), this->m_loggedUsers.end(), [&](auto user) {return user->getUsername() == username; }));
+}
+
+std::string LoginManager::getLastUser() {
+	return this->lastUser;
 }

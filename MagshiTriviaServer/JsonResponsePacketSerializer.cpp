@@ -195,6 +195,19 @@ std::vector<unsigned char>  JsonResponsePacketSerializer::serializeResponse(Subm
 	buffer.insert(buffer.begin(), logoutResponseCode);
 	return buffer;
 }
+std::vector<unsigned char>  JsonResponsePacketSerializer::serializeResponse(GetLastUserResponse res) {
+	std::vector<unsigned char> buffer;
+	json j;
+	j["lastUser"] = res.username;
+
+	for (auto& c : j.dump()) {
+		buffer.push_back(c);
+	}
+
+	JsonResponsePacketSerializer::insertInt2Vector(buffer, buffer.size());
+	buffer.insert(buffer.begin(), logoutResponseCode);
+	return buffer;
+}
 
 std::vector<unsigned char>  JsonResponsePacketSerializer::serializeResponse(GetQuestionResponse res) {
 	std::vector<unsigned char> buffer;
@@ -232,6 +245,7 @@ std::vector<unsigned char> JsonResponsePacketSerializer::serializeStatusResponse
 	buffer.insert(buffer.begin(), logoutResponseCode);
 	return buffer;
 }
+
 std::vector<unsigned char>  JsonResponsePacketSerializer::serializeResponse(LeaveGameResponse res) {
 	return serializeStatusResponse(res.status);
 }

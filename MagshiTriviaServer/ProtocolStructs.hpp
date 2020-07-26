@@ -176,6 +176,10 @@ typedef struct SubmitAnswerRequest {
 	unsigned answerId;
 };
 
+typedef struct GetLastUserResponse {
+	std::string username;
+} GetLastUserResposne;
+
 
 
 enum ResponseCodes { 
@@ -228,6 +232,7 @@ enum RequestCodes {
 	joinRoomRequest,
 	getStatisticsRequest,
 	getLeaderboardRequest,
+	getLastUser,
 	logoutRequest,
 	closeRoomRequest,
 	startGameRequest,
